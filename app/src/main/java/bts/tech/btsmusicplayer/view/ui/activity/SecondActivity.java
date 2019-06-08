@@ -11,7 +11,7 @@ import java.util.List;
 import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.util.SongUtil;
-import bts.tech.btsmusicplayer.view.adapter.RecycleViewAdapter;
+import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 
 public class SecondActivity extends AppCompatActivity {
 
@@ -26,6 +26,6 @@ public class SecondActivity extends AppCompatActivity {
         //recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3, RecyclerView.HORIZONTAL, false));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL));
-        recyclerView.setAdapter(new RecycleViewAdapter(this, myListItems));
+        recyclerView.setAdapter(new SongListAdapter(this, myListItems));
     }
 }

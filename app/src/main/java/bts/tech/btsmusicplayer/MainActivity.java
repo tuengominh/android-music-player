@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems));
         View header = LayoutInflater.from(this).inflate(R.layout.listview_header, null);
         listView.addHeaderView(header);
-        listView.setAdapter(new MyListAdapter(this, R.layout.custom_adapter_main, myListItems));
+        listView.setAdapter(new MyListAdapter(this, R.layout.song_list_adapter_main, myListItems));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

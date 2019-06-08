@@ -10,21 +10,47 @@ public class SongUtil {
     public static List<Song> getListData() {
 
         //ArrayList with .mp3 file references
-        String[] listIds = {"bensoundbrazilsamba", "bensoundcountryboy", "bensoundindia",
-                "bensoundlittleplanet", "bensoundpsychedelic", "bensoundrelaxing",
-                "bensoundtheelevatorbossanova"};
+        String[] listIds = {
+                "bensoundbrazilsamba",
+                "bensoundcountryboy",
+                "bensoundindia",
+                "bensoundlittleplanet",
+                "bensoundpsychedelic",
+                "bensoundrelaxing",
+                "bensoundtheelevatorbossanova"
+        };
 
         //ArrayList with song titles
-        String[] listTitles = {"Brazil Samba", "Country Boy", "India",
-                "Little Planet", "Psychedelic", "Relaxing", "The Elevator Bossanova"};
+        String[] listTitles = {
+                "Brazil Samba",
+                "Country Boy",
+                "India",
+                "Little Planet",
+                "Psychedelic",
+                "Relaxing",
+                "The Elevator Bossa Nova"
+        };
 
         //ArrayList with countries
-        String[] listCountries = {"Brazil", "USA", "India",
-                "Iceland", "South Korea", "Indonesia", "Brazil"};
+        String[] listCountries = {
+                "Brazil",
+                "USA",
+                "India",
+                "Iceland",
+                "South Korea",
+                "Indonesia",
+                "Brazil"
+        };
 
         //ArrayList with songs' duration data
-        String[] listDuration = {"04:00", "03:27", "04:13","06:36",
-                "03:56", "04:48", "04:14"};
+        String[] listDuration = {
+                "04:00",
+                "03:27",
+                "04:13",
+                "06:36",
+                "03:56",
+                "04:48",
+                "04:14"};
 
         //ArrayList with song comments
         String[] listComments = {
