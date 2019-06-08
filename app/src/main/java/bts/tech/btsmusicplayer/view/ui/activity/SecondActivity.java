@@ -10,7 +10,7 @@ import java.util.List;
 
 import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
-import bts.tech.btsmusicplayer.util.Utils;
+import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.adapter.RecycleViewAdapter;
 
 public class SecondActivity extends AppCompatActivity {
@@ -20,7 +20,7 @@ public class SecondActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-        List<Song> myListItems = Utils.getListData();
+        List<Song> myListItems = SongUtil.getListData();
 
         final RecyclerView recyclerView = findViewById(R.id.activity_second__rv__data);
         //recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));

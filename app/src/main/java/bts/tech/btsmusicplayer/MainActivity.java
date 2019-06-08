@@ -22,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 
 import bts.tech.btsmusicplayer.model.Song;
-import bts.tech.btsmusicplayer.util.Utils;
+import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.ui.activity.SecondActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.player = MediaPlayer.create(this, R.raw.bensoundindia);
         this.player.start();
 
-        List<Song> myListItems = Utils.getListData();
+        List<Song> myListItems = SongUtil.getListData();
 
         final ListView listView = findViewById(R.id.activity_main__list_view__data);
         //listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems));

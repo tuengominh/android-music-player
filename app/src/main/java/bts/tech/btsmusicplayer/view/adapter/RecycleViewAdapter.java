@@ -49,9 +49,9 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tvBody.setText(listItems.get(position).getBody());
+        holder.tvBody.setText(listItems.get(position).getComment());
         holder.tvTitle.setText(listItems.get(position).getTitle());
-        holder.imgThumb.setImageResource(context.getResources().getIdentifier(listItems.get(position).getImageId(), "drawable", context.getPackageName()));
+        holder.imgThumb.setImageResource(context.getResources().getIdentifier(listItems.get(position).getSongId(), "drawable", context.getPackageName()));
     }
 
     @Override

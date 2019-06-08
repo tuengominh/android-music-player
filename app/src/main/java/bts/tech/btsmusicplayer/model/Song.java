@@ -2,25 +2,43 @@ package bts.tech.btsmusicplayer.model;
 
 public class Song {
 
-    private String imageId;
+    private String songId;
+    private int iconId;
     private String title;
-    private String body;
+    private String country;
+    private String duration;
+    private String comment;
 
-    public Song(String imageId, String title, String body) {
-        this.imageId = imageId;
+    public Song(String songId, int iconId, String title, String country, String duration, String comment) {
+        this.songId = songId;
+        this.iconId = iconId;
         this.title = title;
-        this.body = body;
+        this.country = country;
+        this.duration = duration;
+        this.comment = comment;
     }
 
-    public String getImageId() {
-        return imageId;
+    public String getSongId() {
+        return songId;
+    }
+
+    public int getIconId() {
+        return iconId;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getBody() {
-        return body;
+    public String getCountry() {
+        return country;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public String getComment() {
+        return comment;
     }
 }
