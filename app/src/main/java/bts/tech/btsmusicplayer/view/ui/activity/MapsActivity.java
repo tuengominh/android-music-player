@@ -1,4 +1,4 @@
-package bts.tech.btsmusicplayer;
+package bts.tech.btsmusicplayer.view.ui.activity;
 
 import android.os.Bundle;
 
@@ -10,6 +10,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import bts.tech.btsmusicplayer.R;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
