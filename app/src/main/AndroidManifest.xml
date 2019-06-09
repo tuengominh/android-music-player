@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="bts.tech.btsmusicplayer">
 
-    <!-- Declaration of MediaPlayer features -->
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <!-- Declaration of Google Maps APIs. The API key is defined in "res/values/google_maps_api.xml". -->
-
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="@string/google_maps_key" />
+    <permission android:name="bts.tech.btsmusicplayer.provider.READWRITE"/>
+    <uses-permission android:name="bts.tech.btsmusicplayer.provider.READWRITE"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".MainPlayerActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -32,13 +26,52 @@
         </activity>
 
         <activity
-            android:name=".view.ui.activity.MapsActivity"
-            android:label="@string/title_activity_maps">
+            android:name=".view.activity.SongDetailActivity"
+            android:label="@string/title_activity_song">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainPlayerActivity"/>
         </activity>
 
-        <activity android:name=".view.ui.activity.SecondActivity">
+        <activity
+            android:name=".view.activity.MapsActivity"
+            android:label="@string/title_activity_maps">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
+
+        <activity
+            android:name=".view.activity.NotificationActivity"
+            android:label="@string/title_activity_notification">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".service.PlayerService"/>
+
+        <provider
+            android:authorities="bts.tech.btsmusicplayer.provider"
+            android:name="bts.tech.btsmusicplayer.data.SongProvider"
+            android:exported="true"
+            android:readPermission="bts.tech.btsmusicplayer.provider.READWRITE"
+            android:writePermission="bts.tech.btsmusicplayer.provider.READWRITE"/>
+
+        <!-- Declaration of Google Maps APIs. The API key is defined in "res/values/google_maps_api.xml". -->
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
     </application>
-
 </manifest>
