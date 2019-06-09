@@ -81,32 +81,4 @@ public class Utils {
         }
         return songs;
     }
-
-    public static int getFlagIconByCountryName(String countryName) {
-        int flagId;
-        switch (countryName) {
-            case "Brazil" :
-                flagId = R.drawable.flag_brazil;
-                break;
-            case "India" :
-                flagId = R.drawable.flag_india;
-                break;
-            case "Indonesia" :
-                flagId = R.drawable.flag_indonesia;
-                break;
-            case "South Korea" :
-                flagId = R.drawable.flag_south_korea;
-                break;
-            case "USA" :
-                flagId = R.drawable.flag_usa;
-                break;
-            case "Iceland" :
-                flagId = R.drawable.flag_iceland;
-                break;
-            default :
-                flagId = 0;
-                break;
-        }
-        return flagId;
-    }
 }

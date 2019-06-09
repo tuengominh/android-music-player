@@ -9,9 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,9 +19,9 @@ import java.util.List;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
 import bts.tech.btsmusicplayer.util.Utils;
-import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 
-public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener {
+        //AdapterView.OnItemClickListener {
 
     /** This is the main/host activity
      * handling the media player with control buttons
@@ -44,7 +42,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     private Button btnStop;
     private Button btnPrev;
     private Button btnNext;
-    private ListView listView;
+    //private ListView listView;
 
     //fields to control the bound service 'PlayerService'
     private PlayerService playerService;
@@ -95,9 +93,9 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         this.btnNext = findViewById(R.id.activity_main_player__btn__next);
         this.btnNext.setOnClickListener(this);
 
-        this.listView = findViewById(R.id.activity_main_player__song__list__view);
-        this.listView.setAdapter(new SongListAdapter(this,0, songs));
-        this.listView.setOnItemClickListener(this);
+        //this.listView = findViewById(R.id.activity_main_player__song__list__view);
+        //this.listView.setAdapter(new SongListAdapter(this,0, songs));
+        //this.listView.setOnItemClickListener(this);
     }
 
     //bind PlayerService within a Thread object
@@ -153,14 +151,14 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     }
 
     //control click events on list items (songs)
-    @Override
+    /**@Override
     public void onItemClick(AdapterView<?> parent, View view, int songId, long songIndex) {
         Log.d(TAG,songId + " clicked");
         if (isBound) {
             this.playerService.playSelectedSong(songIndex);
             this.playerService.play();
         }
-    }
+    }*/
 
     //getters
     public static List<Integer> getPlayList() { return playList; }

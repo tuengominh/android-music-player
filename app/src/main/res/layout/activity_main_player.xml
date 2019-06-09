@@ -46,7 +46,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_prev" />
+            android:background="@mipmap/ic_prev" />
 
         <Button
             android:id="@+id/activity_main_player__btn__pause"
@@ -54,7 +54,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_pause" />
+            android:background="@mipmap/ic_pause" />
 
         <Button
             android:id="@+id/activity_main_player__btn__play"
@@ -62,7 +62,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_play" />
+            android:background="@mipmap/ic_play" />
 
         <Button
             android:id="@+id/activity_main_player__btn__stop"
@@ -70,7 +70,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_stop" />
+            android:background="@mipmap/ic_stop" />
 
         <Button
             android:id="@+id/activity_main_player__btn__next"
@@ -78,7 +78,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_next" />
+            android:background="@mipmap/ic_next" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
