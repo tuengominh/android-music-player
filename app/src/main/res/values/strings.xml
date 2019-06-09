@@ -16,4 +16,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_notification">Notification</string>
     <string name="title_activity_song">Song Details</string>
+    <string name="bts_music_collection">BTS Music Collection</string>
 </resources>

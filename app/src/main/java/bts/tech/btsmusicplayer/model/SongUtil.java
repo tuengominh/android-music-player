@@ -79,4 +79,32 @@ public class SongUtil {
         }
         return songs;
     }
+
+    public static int getFlagIconByCountryName(String countryName) {
+        int flagId;
+        switch (countryName) {
+            case "Brazil" :
+                flagId = R.mipmap.flag_brazil;
+                break;
+            case "India" :
+                flagId = R.mipmap.flag_india;
+                break;
+            case "Indonesia" :
+                flagId = R.mipmap.flag_indonesia;
+                break;
+            case "South Korea" :
+                flagId = R.mipmap.flag_south_korea;
+                break;
+            case "USA" :
+                flagId = R.mipmap.flag_usa;
+                break;
+            case "Iceland" :
+                flagId = R.mipmap.flag_iceland;
+                break;
+            default :
+                flagId = 0;
+                break;
+        }
+        return flagId;
+    }
 }

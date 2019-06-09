@@ -15,12 +15,12 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
      * handling the list view with all songs */
 
     public static String PACKAGE_NAME;
+    protected final String TAG = MainPlayerActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_main_player);
         PACKAGE_NAME = getApplicationContext().getPackageName();
     }
 
