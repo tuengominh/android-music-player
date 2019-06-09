@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="bts.tech.btsmusicplayer">
 
-    <permission android:name="bts.tech.btsmusicplayer.provider.READWRITE"/>
-    <uses-permission android:name="bts.tech.btsmusicplayer.provider.READWRITE"/>
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,29 +23,6 @@
         </activity>
 
         <activity
-            android:name=".view.activity.SongDetailActivity"
-            android:label="@string/title_activity_song">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainPlayerActivity"/>
-        </activity>
-
-        <activity
-            android:name=".view.activity.MapsActivity"
-            android:label="@string/title_activity_maps">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name=".view.activity.NotificationActivity"
             android:label="@string/title_activity_notification">
             <intent-filter>
@@ -59,13 +33,6 @@
         </activity>
 
         <service android:name=".service.PlayerService"/>
-
-        <provider
-            android:authorities="bts.tech.btsmusicplayer.provider"
-            android:name="bts.tech.btsmusicplayer.data.SongProvider"
-            android:exported="true"
-            android:readPermission="bts.tech.btsmusicplayer.provider.READWRITE"
-            android:writePermission="bts.tech.btsmusicplayer.provider.READWRITE"/>
 
         <!-- Declaration of Google Maps APIs. The API key is defined in "res/values/google_maps_api.xml". -->
 

@@ -8,8 +8,6 @@ public class Song {
     private String country;
     private String duration;
     private String comment;
-    private boolean isClicked;
-    private boolean isPlaying;
 
     public Song(int songId, String path, String title, String country, String duration, String comment) {
         this.songId = songId;
@@ -18,8 +16,6 @@ public class Song {
         this.country = country;
         this.duration = duration;
         this.comment = comment;
-        this.isClicked = false;
-        this.isPlaying = false;
     }
 
     public int getSongId() { return songId; }
@@ -65,16 +61,4 @@ public class Song {
     public void setComment(String comment) {
         this.comment = comment;
     }
-
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public void setPlaying(boolean playing) {
-        isPlaying = playing;
-    }
-
-    public boolean isClicked() { return isClicked; }
-
-    public void setClicked(boolean clicked) { isClicked = clicked; }
 }

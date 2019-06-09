@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/layout_player_activity"
+    android:id="@+id/activity_main_player__cl__root"
     tools:context=".MainPlayerActivity">
 
     <include
@@ -15,15 +15,20 @@
         android:layout_height="match_parent" />
 
     <ListView
-        android:id="@+id/song_list_view"
+        android:id="@+id/activity_main_player__song__list__view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="8"
         tools:ignore="MissingConstraints" />
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="32dp"
         android:layout_weight="2"
         android:gravity="center"
@@ -36,35 +41,40 @@
         tools:ignore="MissingConstraints">
 
         <Button
-            android:id="@+id/btn_prev_player"
+            android:id="@+id/activity_main_player__btn__prev"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@drawable/ic_prev" />
 
         <Button
-            android:id="@+id/btn_pause_player"
+            android:id="@+id/activity_main_player__btn__pause"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@drawable/ic_pause" />
 
         <Button
-            android:id="@+id/btn_play_player"
+            android:id="@+id/activity_main_player__btn__play"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@drawable/ic_play" />
 
         <Button
-            android:id="@+id/btn_stop_player"
+            android:id="@+id/activity_main_player__btn__stop"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@drawable/ic_stop" />
 
         <Button
-            android:id="@+id/btn_next_player"
+            android:id="@+id/activity_main_player__btn__next"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"

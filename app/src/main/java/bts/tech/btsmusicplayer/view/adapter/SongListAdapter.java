@@ -18,7 +18,7 @@ import bts.tech.btsmusicplayer.model.Song;
 
 public class SongListAdapter extends ArrayAdapter<Song> {
 
-    /** To inflate the song list into a list view */
+    /** Inflate the song list into a list view */
 
     private Context context;
     private int layoutResource;

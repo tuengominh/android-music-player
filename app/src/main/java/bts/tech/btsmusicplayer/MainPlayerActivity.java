@@ -1,6 +1,8 @@
 package bts.tech.btsmusicplayer;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 
@@ -32,7 +34,11 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     public static String PACKAGE_NAME;
     protected static final String TAG = MainPlayerActivity.class.getSimpleName();
 
-    //fields of UI items
+    //fields to control lists of songs
+    private static List<Integer> playList = new ArrayList<>();
+    private static List<Song> songs = new ArrayList<>();
+
+    //fields of UI items: list view & buttons
     private Button btnPlay;
     private Button btnPause;
     private Button btnStop;
@@ -40,20 +46,15 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     private Button btnNext;
     private ListView listView;
 
-    //fields to control lists of songs
-    private static List<Integer> playList = new ArrayList<>();
-    private static List<Song> songs = new ArrayList<>();
-
-    //fields to control PlayerService
+    //fields to control the bound service 'PlayerService'
     private PlayerService playerService;
     private boolean isBound = false;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            PlayerService.LocalBinder binder = (PlayerService.LocalBinder) service;
-            playerService = binder.getService();
+        public void onServiceConnected(ComponentName name, IBinder serviceInfo) {
+            playerService = new PlayerService(serviceInfo);
             isBound = true;
         }
 
@@ -63,12 +64,13 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
     };
 
+    //onCreate()
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_player);
 
-        //get context
+        //get context to build resource path in Utils
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
         //setup lists of songs
@@ -78,57 +80,85 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
 
         //setup buttons
-        this.btnPlay = findViewById(R.id.btn_play_player);
+        this.btnPlay = findViewById(R.id.activity_main_player__btn__play);
         this.btnPlay.setOnClickListener(this);
 
-        this.btnPause = findViewById(R.id.btn_pause_player);
+        this.btnPause = findViewById(R.id.activity_main_player__btn__pause);
         this.btnPause.setOnClickListener(this);
 
-        this.btnStop = findViewById(R.id.btn_stop_player);
+        this.btnStop = findViewById(R.id.activity_main_player__btn__stop);
         this.btnStop.setOnClickListener(this);
 
-        this.btnPrev = findViewById(R.id.btn_prev_player);
+        this.btnPrev = findViewById(R.id.activity_main_player__btn__prev);
         this.btnPrev.setOnClickListener(this);
 
-        this.btnNext = findViewById(R.id.btn_next_player);
+        this.btnNext = findViewById(R.id.activity_main_player__btn__next);
         this.btnNext.setOnClickListener(this);
 
-        this.listView = findViewById(R.id.song_list_view);
+        this.listView = findViewById(R.id.activity_main_player__song__list__view);
         this.listView.setAdapter(new SongListAdapter(this,0, songs));
         this.listView.setOnItemClickListener(this);
     }
 
+    //bind PlayerService within a Thread object
+    @Override
+    protected void onStart() {
+        super.onStart();
+        final Intent serviceIntent = new Intent(this, PlayerService.class);
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+            }
+        };
+        thread.start();
+    }
+
+    //stop PlayerService if isFinishing()
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isFinishing()) {
+            unbindService(serviceConnection);
+            isBound = false;
+            playerService.stopSelf();
+        }
+    }
+
+    //control click events on buttons
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_play_player:
-                Log.d(MainPlayerActivity.TAG,"Played");
+            case R.id.activity_main_player__btn__play:
+                Log.d(TAG,"Played");
                 this.playerService.play();
                 break;
-            case R.id.btn_pause_player:
-                Log.d(MainPlayerActivity.TAG,"Paused");
+            case R.id.activity_main_player__btn__pause:
+                Log.d(TAG,"Paused");
                 this.playerService.pause();
                 break;
-            case R.id.btn_stop_player:
-                Log.d(MainPlayerActivity.TAG,"Stopped");
+            case R.id.activity_main_player__btn__stop:
+                Log.d(TAG,"Stopped");
                 this.playerService.stop();
                 break;
-            case R.id.btn_prev_player:
-                Log.d(MainPlayerActivity.TAG,"Go Back");
+            case R.id.activity_main_player__btn__prev:
+                Log.d(TAG,"Go back");
                 this.playerService.previous();
                 break;
-            case R.id.btn_next_player:
-                Log.d(MainPlayerActivity.TAG,"Go Next");
+            case R.id.activity_main_player__btn__next:
+                Log.d(TAG,"Go next");
                 this.playerService.next();
                 break;
         }
     }
 
+    //control click events on list items (songs)
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(MainPlayerActivity.TAG,"Item " + position + " Clicked");
+    public void onItemClick(AdapterView<?> parent, View view, int songId, long songIndex) {
+        Log.d(TAG,songId + " clicked");
         if (isBound) {
-            this.playerService.playSelectedSong(position);
+            this.playerService.playSelectedSong(songIndex);
+            this.playerService.play();
         }
     }
 

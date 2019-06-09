@@ -9,8 +9,8 @@ import bts.tech.btsmusicplayer.model.Song;
 
 public class Utils {
 
-    /** Util class used to generate a list of Song objects
-     * corresponding to available local 'raw' resources */
+    /** Util class used to generate a list of Song objects corresponding to available local 'raw' resources
+     * also get flag icons corresponding to songs' countries */
 
     public static List<Song> getSongList() {
 
@@ -72,7 +72,7 @@ public class Utils {
         for (int i = 0; i < listResIds.length; i++) {
             Song song = new Song(
                     listResIds[i],
-                    "android.resource://" + MainPlayerActivity.PACKAGE_NAME + "/" + listResIds[i],
+                    "android.resource://" + MainPlayerActivity.PACKAGE_NAME + "/raw/" + listResIds[i],
                     listTitles[i],
                     listCountries[i],
                     listDuration[i],
