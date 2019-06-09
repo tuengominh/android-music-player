@@ -2,6 +2,7 @@ package bts.tech.btsmusicplayer.model;
 
 public class Song {
 
+    private int songId;
     private String path;
     private String title;
     private String country;
@@ -10,7 +11,8 @@ public class Song {
     private boolean isClicked;
     private boolean isPlaying;
 
-    public Song(String path, String title, String country, String duration, String comment) {
+    public Song(int songId, String path, String title, String country, String duration, String comment) {
+        this.songId = songId;
         this.path = path;
         this.title = title;
         this.country = country;
@@ -19,6 +21,10 @@ public class Song {
         this.isClicked = false;
         this.isPlaying = false;
     }
+
+    public int getSongId() { return songId; }
+
+    public void setSongId(int songId) { this.songId = songId; }
 
     public String getPath() {
         return path;

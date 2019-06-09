@@ -16,4 +16,23 @@ public class PlayerService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    public void playSelectedSong(int position) {
+
+    }
+
+    public void play() {
+    }
+
+    public void pause() {
+    }
+
+    public void stop() {
+    }
+
+    public void previous() {
+    }
+
+    public void next() {
+    }
 }
