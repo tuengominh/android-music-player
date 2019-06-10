@@ -35,7 +35,6 @@ public class SongUtil {
                 break;
             default :
                 flagResId = R.mipmap.ic_launcher_foreground;
-                break;
         }
         return flagResId;
     }
