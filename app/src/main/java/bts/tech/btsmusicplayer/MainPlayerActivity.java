@@ -168,7 +168,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "Song no." + position + " clicked");
         if (isBound) {
-            this.playerService.playSelectedSong(position - 1);
+            this.playerService.selectSong(position - 1);
         }
     }
 

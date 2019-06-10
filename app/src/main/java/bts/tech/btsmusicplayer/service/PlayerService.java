@@ -29,7 +29,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private  IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private MediaPlayer mediaPlayer = new MediaPlayer();
+    private MediaPlayer mediaPlayer = null;
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
     private int currentSongIndex = 0;
@@ -46,25 +46,47 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         Log.d(TAG, "Service created");
 
         //create media player
+        this.mediaPlayer = new MediaPlayer();
+
         for (int id : playList) {
             mediaPlayer = MediaPlayer.create(this, id);
+            Log.d(TAG, "MediaPlayer for " + id + " created");
         }
-        this.mediaPlayer.setOnPreparedListener(this);
 
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        //TODO: using URI
+        //Uri uri;
+        //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        //mediaPlayer.setDataSource(getApplicationContext(), uri);
+        //mediaPlayer.prepare();
+
+        mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.prepareAsync(); // prepare async to not block main thread
+
+        this.mediaPlayer.setOnPreparedListener(this);
+        this.mediaPlayer.prepareAsync();
+
+        this.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.stop();
-                mp.release();
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
             }
         });
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        Log.d(TAG, "MediaPlayer created");
-        mp.start();
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        mediaPlayer.start();
+        Log.d(TAG, "MediaPlayer started");
         callNotification();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
     }
 
     //response to click events on buttons
@@ -93,9 +115,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.currentSongIndex--;
         if(this.currentSongIndex < 0) {
             this.currentSongIndex = this.playList.size() - 1;
-            playSelectedSong(this.currentSongIndex);
+            selectSong(this.currentSongIndex);
         } else {
-            playSelectedSong(this.currentSongIndex);
+            selectSong(this.currentSongIndex);
         }
         this.mediaPlayer.start();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
@@ -105,21 +127,22 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.currentSongIndex++;
         if(this.currentSongIndex > this.playList.size() - 1) {
             this.currentSongIndex = 0;
-            playSelectedSong(this.currentSongIndex);
+            selectSong(this.currentSongIndex);
         } else {
-            playSelectedSong(this.currentSongIndex);
+            selectSong(this.currentSongIndex);
         }
         this.mediaPlayer.start();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     //response to click events on list items (songs)
-    public void playSelectedSong(int index) {
+    public void selectSong(int index) {
         stop();
         this.mediaPlayer.reset();
         try {
+            //TODO: retrieve from ContentResolver
             this.currentSongIndex = index;
-
+            this.mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
         }
