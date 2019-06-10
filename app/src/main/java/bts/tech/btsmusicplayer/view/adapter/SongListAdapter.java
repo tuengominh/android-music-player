@@ -17,7 +17,7 @@ import java.util.List;
 import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
-import bts.tech.btsmusicplayer.util.Utils;
+import bts.tech.btsmusicplayer.util.SongUtil;
 
 public class SongListAdapter extends ArrayAdapter<Song> {
 
@@ -41,7 +41,7 @@ public class SongListAdapter extends ArrayAdapter<Song> {
         View convertedView = inflater.inflate(layoutRes,null);
 
         ImageView img = convertedView.findViewById(R.id.song_list_adapter__flag__icon);
-        img.setImageResource(Utils.getFlagResId(MainPlayerActivity.getSongs().get(position).getCountry()));
+        img.setImageResource(SongUtil.getFlagResId(MainPlayerActivity.getSongs().get(position).getCountry()));
 
         TextView titleTextView = convertedView.findViewById(R.id.song_list_adapter__tv__title);
         titleTextView.setText(MainPlayerActivity.getSongs().get(position).getTitle());

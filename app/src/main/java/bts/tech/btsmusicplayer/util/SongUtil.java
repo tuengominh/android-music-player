@@ -7,7 +7,7 @@ import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
 
-public class Utils {
+public class SongUtil {
 
     /** Util class used to generate a list of Song objects corresponding to available local 'raw' resources
      * also get flag icons corresponding to songs' countries */

@@ -21,7 +21,7 @@ import java.util.List;
 
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
-import bts.tech.btsmusicplayer.util.Utils;
+import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 
 public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -70,11 +70,11 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_player);
 
-        //get context to build resource path in Utils
+        //get context to build resource path in SongUtil
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
         //setup lists of songs
-        for (Song song : Utils.getSongList()) {
+        for (Song song : SongUtil.getSongList()) {
             songs.add(song);
             playList.add(song.getResId());
         }
