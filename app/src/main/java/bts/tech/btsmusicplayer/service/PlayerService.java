@@ -118,9 +118,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         stop();
         this.mediaPlayer.reset();
         try {
-            //TODO: this.mediaPlayer.setDataSource(this, Uri.parse(this.songs.get(position).getResPath()));
             this.currentSongIndex = index;
-            //TODO: this.mediaPlayer.prepareAsync();
 
         } catch (Exception e) {
             e.printStackTrace();
