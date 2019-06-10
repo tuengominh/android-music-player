@@ -29,7 +29,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private  IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private MediaPlayer mediaPlayer = null;
+    private MediaPlayer mediaPlayer = new MediaPlayer();
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
     private int currentSongIndex = 0;
@@ -46,47 +46,25 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         Log.d(TAG, "Service created");
 
         //create media player
-        this.mediaPlayer = new MediaPlayer();
-
         for (int id : playList) {
             mediaPlayer = MediaPlayer.create(this, id);
             Log.d(TAG, "MediaPlayer for " + id + " created");
         }
-
-        //TODO: using URI
-        //Uri uri;
-        //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        //mediaPlayer.setDataSource(getApplicationContext(), uri);
-        //mediaPlayer.prepare();
-
-        mediaPlayer.setOnPreparedListener(this);
-        mediaPlayer.prepareAsync(); // prepare async to not block main thread
-
         this.mediaPlayer.setOnPreparedListener(this);
-        this.mediaPlayer.prepareAsync();
 
-        this.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
+            public void onCompletion(MediaPlayer mp) {
+                mp.stop();
+                mp.release();
             }
         });
     }
 
     @Override
-    public void onPrepared(MediaPlayer mediaPlayer) {
-        mediaPlayer.start();
-        Log.d(TAG, "MediaPlayer started");
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
         callNotification();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
     }
 
     //response to click events on buttons
@@ -140,9 +118,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         stop();
         this.mediaPlayer.reset();
         try {
-            //TODO: retrieve from ContentResolver
             this.currentSongIndex = index;
-            this.mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
         }
