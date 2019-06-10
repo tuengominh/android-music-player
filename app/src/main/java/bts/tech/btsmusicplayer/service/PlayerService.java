@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -22,7 +20,7 @@ import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
 
-public class PlayerService extends Service {
+public class PlayerService extends Service implements MediaPlayer.OnPreparedListener {
 
     /** PlayerService is the bound service running MediaPlayer
      * and call notification */
@@ -50,72 +48,84 @@ public class PlayerService extends Service {
         //create media player
         for (int id : playList) {
             mediaPlayer = MediaPlayer.create(this, id);
+            Log.d(TAG, "MediaPlayer for " + id + " created");
         }
-        this.mediaPlayer.start();
-        callNotification(currentSongIndex);
+        this.mediaPlayer.setOnPreparedListener(this);
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.stop();
+                mp.release();
+            }
+        });
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
+        callNotification();
     }
 
     //response to click events on buttons
     public void play() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
             this.mediaPlayer.start();
-            callNotification(currentSongIndex);
+            Log.d(TAG, "Playing song with index " + currentSongIndex);
         }
     }
 
     public void pause() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
             this.mediaPlayer.pause();
+            Log.d(TAG, "MediaPlayer paused");
         }
     }
 
     public void stop() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
             this.mediaPlayer.stop();
+            Log.d(TAG, "MediaPlayer stopped");
         }
     }
 
     public void previous() {
-        if(this.currentSongIndex <= 0) {
-            playSelectedSong(this.playList.size() - 1);
+        this.currentSongIndex--;
+        if(this.currentSongIndex < 0) {
+            this.currentSongIndex = this.playList.size() - 1;
+            selectSong(this.currentSongIndex);
         } else {
-            playSelectedSong(this.currentSongIndex - 1);
+            selectSong(this.currentSongIndex);
         }
         this.mediaPlayer.start();
-        this.currentSongIndex--;
-        callNotification(currentSongIndex);
+        Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     public void next() {
-        if(this.currentSongIndex >= this.playList.size() - 1) {
-            playSelectedSong(0);
+        this.currentSongIndex++;
+        if(this.currentSongIndex > this.playList.size() - 1) {
+            this.currentSongIndex = 0;
+            selectSong(this.currentSongIndex);
         } else {
-            playSelectedSong(this.currentSongIndex + 1);
+            selectSong(this.currentSongIndex);
         }
         this.mediaPlayer.start();
-        this.currentSongIndex++;
-        callNotification(currentSongIndex);
+        Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     //response to click events on list items (songs)
-    public void playSelectedSong(long position) {
+    public void selectSong(int index) {
         stop();
         this.mediaPlayer.reset();
         try {
-            int index = (int) position;
-            this.mediaPlayer.setDataSource(this,
-                    Uri.parse(this.songs.get(index).getResPath())
-            );
             this.currentSongIndex = index;
-            this.mediaPlayer.prepareAsync();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     //notification when a song is playing
-    private void callNotification(int currentSongIndex) {
+    private void callNotification() {
 
         //send data to NotificationActivity
         Intent tapIntent = new Intent(this, NotificationActivity.class);
@@ -128,7 +138,9 @@ public class PlayerService extends Service {
         //build notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId")
                 .setAutoCancel(true)
-                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_noti_foreground)
+                .setContentTitle("Now Playing")
+                .setContentText(this.songs.get(currentSongIndex).getTitle())
                 .setContentIntent(pendingIntent);
 
         ((NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE))

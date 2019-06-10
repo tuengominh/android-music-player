@@ -45,6 +45,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     private Button btnStop;
     private Button btnPrev;
     private Button btnNext;
+    private Button btnMap;
     private ListView listView;
 
     //fields to control the bound service 'PlayerService'
@@ -100,6 +101,9 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         listView.addHeaderView(listViewHeader);
         this.listView.setAdapter(new SongListAdapter(this,R.layout.song_list_adapter, songs));
         this.listView.setOnItemClickListener(this);
+
+        this.btnMap = findViewById(R.id.activity_main_player__btn__map);
+        this.btnMap.setOnClickListener(this);
     }
 
     //bind PlayerService within a Thread object
@@ -151,16 +155,20 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
                 Log.d(TAG,"Go next");
                 this.playerService.next();
                 break;
+            case R.id.activity_main_player__btn__map:
+                Log.d(TAG,"Go to Map");
+                break;
+            default:
+                Log.w(TAG, "Not clickable");
         }
     }
 
     //control click events on list items (songs)
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int songId, long position) {
-        Log.d(TAG,songId + " clicked");
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "Song no." + position + " clicked");
         if (isBound) {
-            this.playerService.playSelectedSong(position);
-            this.playerService.play();
+            this.playerService.selectSong(position - 1);
         }
     }
 

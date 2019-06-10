@@ -6,7 +6,7 @@
     android:tint="#FFFFFF">
   <group android:translateX="8.689655"
       android:translateY="8.689655">
-      <resPath
+      <path
           android:fillColor="#FF000000"
           android:pathData="M8,5v14l11,-7z"/>
   </group>

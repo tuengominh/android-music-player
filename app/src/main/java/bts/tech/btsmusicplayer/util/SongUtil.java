@@ -35,7 +35,6 @@ public class SongUtil {
                 break;
             default :
                 flagResId = R.mipmap.ic_launcher_foreground;
-                break;
         }
         return flagResId;
     }
@@ -100,8 +99,8 @@ public class SongUtil {
         for (int i = 0; i < listResIds.length; i++) {
             Song song = new Song(
                     listResIds[i],
-                    "android.resource://" + MainPlayerActivity.PACKAGE_NAME + "/raw/" + listResIds[i],
-                    "android.resource://" + MainPlayerActivity.PACKAGE_NAME + "/mipmap/" + getFlagResId(listCountries[i]),
+                    "android.resource://" + MainPlayerActivity.PACKAGE_NAME + listResIds[i],
+                    "android.resource://" + MainPlayerActivity.PACKAGE_NAME + getFlagResId(listCountries[i]),
                     listTitles[i],
                     listCountries[i],
                     listDuration[i],
