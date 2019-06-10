@@ -13,37 +13,39 @@
         android:id="@+id/activity_notification__img__song__icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/img_content_description"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints,VectorDrawableCompat"
-        android:contentDescription="@string/img_content_description" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/activity_notification__tv__song_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/activity_notification__tv__song__comment"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_notification__img__song__icon"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/activity_notification__img__song__icon"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="@+id/activity_notification__img__song__icon" />
 
     <TextView
         android:id="@+id/activity_notification__tv__song__comment"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:textStyle="italic"
-        android:textSize="12sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:textColor="@android:color/black"
-        app:layout_constraintStart_toEndOf="@+id/activity_notification__img__song__icon"
-        app:layout_constraintTop_toBottomOf="@+id/activity_notification__tv__song_title"
-        tools:ignore="MissingConstraints" />
+        android:textSize="12sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_notification__img__song__icon" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
