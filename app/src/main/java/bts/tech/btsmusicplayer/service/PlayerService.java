@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -13,14 +12,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
-import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
 
 public class PlayerService extends Service {
@@ -53,6 +50,14 @@ public class PlayerService extends Service {
             mediaPlayer = MediaPlayer.create(this, id);
         }
         this.mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.stop();
+                mp.release();
+            }
+        });
+
         callNotification(currentSongIndex);
     }
 
@@ -104,13 +109,14 @@ public class PlayerService extends Service {
         this.mediaPlayer.reset();
         try {
             int index = (int) position;
-            this.mediaPlayer.setDataSource(this,
-                    Uri.parse(this.songs.get(index).getResPath())
-            );
+            //this.mediaPlayer.setDataSource(this,
+            //        Uri.parse(this.songs.get(index).getResPath())
+            //);
             this.currentSongIndex = index;
-            this.mediaPlayer.prepareAsync();
+            this.mediaPlayer.start();
+            //this.mediaPlayer.prepareAsync();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
