@@ -46,8 +46,8 @@ public class SongListAdapter extends ArrayAdapter<Song> {
         TextView titleTextView = convertedView.findViewById(R.id.song_list_adapter__tv__title);
         titleTextView.setText(MainPlayerActivity.getSongs().get(position).getTitle());
 
-        TextView bodyTextView = convertedView.findViewById(R.id.song_list_adapter__tv__duration);
-        bodyTextView.setText(MainPlayerActivity.getSongs().get(position).getDuration());
+        TextView bodyTextView = convertedView.findViewById(R.id.song_list_adapter__tv__comment);
+        bodyTextView.setText(MainPlayerActivity.getSongs().get(position).getComment());
 
         return convertedView;
     }
