@@ -165,11 +165,10 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
 
     //control click events on list items (songs)
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int songId, long position) {
-        Log.d(TAG,songId + " clicked");
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "Song no." + position + " clicked");
         if (isBound) {
-            this.playerService.playSelectedSong(position);
-            this.playerService.play();
+            this.playerService.playSelectedSong(position - 1);
         }
     }
 

@@ -25,13 +25,11 @@ public class SongListAdapter extends ArrayAdapter<Song> {
 
     private Context context;
     private int layoutRes;
-    private List<Song> songs;
 
     public SongListAdapter(@NonNull Context context, @LayoutRes int layoutRes, @NonNull List<Song> songs) {
         super(context, layoutRes, songs);
         this.context = context;
         this.layoutRes = layoutRes;
-        this.songs = songs;
     }
 
     @NonNull
