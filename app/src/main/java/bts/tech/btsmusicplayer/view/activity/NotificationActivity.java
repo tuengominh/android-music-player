@@ -28,6 +28,6 @@ public class NotificationActivity extends AppCompatActivity {
         //send data to layout
         songTitle.setText(intent.getStringExtra("title"));
         songComment.setText(intent.getStringExtra("text"));
-        songIcon.setImageResource(intent.getIntExtra("icon", R.mipmap.ic_launcher_foreground));
+        songIcon.setImageResource(R.mipmap.ic_launcher_foreground);
     }
 }

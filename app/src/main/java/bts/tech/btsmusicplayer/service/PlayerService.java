@@ -121,7 +121,6 @@ public class PlayerService extends Service {
         //send data to NotificationActivity
         Intent tapIntent = new Intent(this, NotificationActivity.class);
         tapIntent.putExtra("index", this.currentSongIndex);
-        tapIntent.putExtra("icon", SongUtil.getFlagResId(this.songs.get(currentSongIndex).getCountry()));
         tapIntent.putExtra("title", this.songs.get(currentSongIndex).getTitle());
         tapIntent.putExtra("text", this.songs.get(currentSongIndex).getComment());
 
