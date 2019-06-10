@@ -12,6 +12,34 @@ public class Utils {
     /** Util class used to generate a list of Song objects corresponding to available local 'raw' resources
      * also get flag icons corresponding to songs' countries */
 
+    public static int getFlagResId(String country) {
+        int flagResId;
+        switch (country) {
+            case "Brazil" :
+                flagResId = R.mipmap.flag_brazil_foreground;
+                break;
+            case "India" :
+                flagResId = R.mipmap.flag_india_foreground;
+                break;
+            case "Indonesia" :
+                flagResId = R.mipmap.flag_indonesia_foreground;
+                break;
+            case "South Korea" :
+                flagResId = R.mipmap.flag_southkorea_foreground;
+                break;
+            case "USA" :
+                flagResId = R.mipmap.flag_usa_foreground;
+                break;
+            case "Iceland" :
+                flagResId = R.mipmap.flag_iceland_foreground;
+                break;
+            default :
+                flagResId = R.mipmap.ic_launcher_foreground;
+                break;
+        }
+        return flagResId;
+    }
+
     public static List<Song> getSongList() {
 
         //ArrayList with .mp3 file references
@@ -73,6 +101,7 @@ public class Utils {
             Song song = new Song(
                     listResIds[i],
                     "android.resource://" + MainPlayerActivity.PACKAGE_NAME + "/raw/" + listResIds[i],
+                    "android.resource://" + MainPlayerActivity.PACKAGE_NAME + "/mipmap/" + getFlagResId(listCountries[i]),
                     listTitles[i],
                     listCountries[i],
                     listDuration[i],

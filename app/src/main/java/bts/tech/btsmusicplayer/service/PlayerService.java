@@ -104,7 +104,7 @@ public class PlayerService extends Service {
         try {
             int index = (int) position;
             this.mediaPlayer.setDataSource(this,
-                    Uri.parse(this.songs.get(index).getPath())
+                    Uri.parse(this.songs.get(index).getResPath())
             );
             this.currentSongIndex = index;
             this.mediaPlayer.prepareAsync();

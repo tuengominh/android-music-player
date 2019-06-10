@@ -10,7 +10,7 @@ import bts.tech.btsmusicplayer.R;
 
 public class NotificationActivity extends AppCompatActivity {
 
-    /** Inflate titles & comments of playing songs */
+    /** Inflate titles & duration info of playing songs */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
