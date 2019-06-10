@@ -14,7 +14,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/todo" />
+        android:contentDescription="@string/img_content_description" />
 
     <TextView
         android:id="@+id/song_list_adapter__tv__title"
@@ -26,7 +26,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="18dp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/song_list_adapter__flag__icon"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:textSize="14dp"
+        android:textSize="12sp"
         android:textStyle="italic"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"

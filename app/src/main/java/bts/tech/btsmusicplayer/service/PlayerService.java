@@ -20,6 +20,7 @@ import java.util.Random;
 import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
+import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
 
 public class PlayerService extends Service {
@@ -120,6 +121,7 @@ public class PlayerService extends Service {
         //send data to NotificationActivity
         Intent tapIntent = new Intent(this, NotificationActivity.class);
         tapIntent.putExtra("index", this.currentSongIndex);
+        tapIntent.putExtra("icon", SongUtil.getFlagResId(this.songs.get(currentSongIndex).getCountry()));
         tapIntent.putExtra("title", this.songs.get(currentSongIndex).getTitle());
         tapIntent.putExtra("text", this.songs.get(currentSongIndex).getComment());
 
@@ -128,7 +130,9 @@ public class PlayerService extends Service {
         //build notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId")
                 .setAutoCancel(true)
-                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_noti_foreground)
+                .setContentTitle("Now Playing")
+                .setContentText(this.songs.get(currentSongIndex).getTitle())
                 .setContentIntent(pendingIntent);
 
         ((NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE))

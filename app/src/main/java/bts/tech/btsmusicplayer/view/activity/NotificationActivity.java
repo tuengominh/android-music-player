@@ -2,6 +2,7 @@ package bts.tech.btsmusicplayer.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +23,11 @@ public class NotificationActivity extends AppCompatActivity {
 
         final TextView songTitle = findViewById(R.id.activity_notification__tv__song_title);
         final TextView songComment = findViewById(R.id.activity_notification__tv__song__comment);
+        final ImageView songIcon = findViewById(R.id.activity_notification__img__song__icon);
 
+        //send data to layout
         songTitle.setText(intent.getStringExtra("title"));
         songComment.setText(intent.getStringExtra("text"));
+        songIcon.setImageResource(intent.getIntExtra("icon", R.mipmap.ic_launcher_foreground));
     }
 }
