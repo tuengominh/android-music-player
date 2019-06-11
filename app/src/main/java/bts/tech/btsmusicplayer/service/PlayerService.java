@@ -29,7 +29,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private  IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private MediaPlayer mediaPlayer = new MediaPlayer();
+    //TODO: private Uri uri;
+    private MediaPlayer mediaPlayer;
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
     private int currentSongIndex = 0;
@@ -46,31 +47,39 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         Log.d(TAG, "Service created");
 
         //create media player
+        mediaPlayer = new MediaPlayer();
+
         for (int id : playList) {
             mediaPlayer = MediaPlayer.create(this, id);
             Log.d(TAG, "MediaPlayer for " + id + " created");
         }
+
+        //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        //mediaPlayer.setDataSource(getApplicationContext(), this.uri);
+        //mediaPlayer.prepare();
+
         this.mediaPlayer.setOnPreparedListener(this);
+        //this.mediaPlayer.prepareAsync();
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                mp.stop();
                 mp.release();
             }
         });
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        mp.start();
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        mediaPlayer.start();
         callNotification();
     }
 
     //response to click events on buttons
     public void play() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
-            this.mediaPlayer.start();
+            //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
+            onPrepared(mediaPlayer);
             Log.d(TAG, "Playing song with index " + currentSongIndex);
         }
     }
@@ -97,7 +106,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         } else {
             selectSong(this.currentSongIndex);
         }
-        this.mediaPlayer.start();
+        //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
+        onPrepared(mediaPlayer);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
@@ -109,13 +119,14 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         } else {
             selectSong(this.currentSongIndex);
         }
-        this.mediaPlayer.start();
+        //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
+        onPrepared(mediaPlayer);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     //response to click events on list items (songs)
     public void selectSong(int index) {
-        stop();
+        this.mediaPlayer.release();
         this.mediaPlayer.reset();
         try {
             this.currentSongIndex = index;
@@ -133,7 +144,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         tapIntent.putExtra("title", this.songs.get(currentSongIndex).getTitle());
         tapIntent.putExtra("text", this.songs.get(currentSongIndex).getComment());
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 23, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         //build notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId")
