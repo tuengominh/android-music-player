@@ -4,9 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -32,7 +29,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private  IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer = new MediaPlayer();
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
     private int currentSongIndex = 0;
@@ -49,23 +46,11 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         Log.d(TAG, "Service created");
 
         //create media player
-        mediaPlayer = new MediaPlayer();
-
         for (int id : playList) {
             mediaPlayer = MediaPlayer.create(this, id);
-            //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            //try {
-                //mediaPlayer.setDataSource(this, Uri.parse("android.resource://"
-                //        + MainPlayerActivity.PACKAGE_NAME + id));
-                //mediaPlayer.setDataSource(getResources().openRawResourceFd(id).getFileDescriptor());
-                //mediaPlayer.prepare();
-            //} catch (IOException e) {
-            //    e.printStackTrace();
-            //}
             Log.d(TAG, "MediaPlayer for " + id + " created");
         }
-
-        mediaPlayer.setOnPreparedListener(this);
+        this.mediaPlayer.setOnPreparedListener(this);
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -77,20 +62,18 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     @Override
-    public void onPrepared(MediaPlayer mediaPlayer) {
-        mediaPlayer.start();
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
         callNotification();
     }
 
     //response to click events on buttons
     public void play() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
-            //this.mediaPlayer.stop();
-            this.mediaPlayer.start();
-            callNotification();
+            this.mediaPlayer.stop();
+            Log.d(TAG, "Playing song with index " + currentSongIndex);
         }
-        //this.mediaPlayer.prepareAsync();
-        Log.d(TAG, "Playing song with index " + currentSongIndex);
+        this.mediaPlayer.start();
     }
 
     public void pause() {
@@ -114,8 +97,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         }
         selectSong(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
-        this.mediaPlayer.start();
-        callNotification();
     }
 
     public void next() {
@@ -125,31 +106,18 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         }
         selectSong(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
-        this.mediaPlayer.start();
-        callNotification();
     }
 
     //response to click events on list items (songs)
     public void selectSong(int index) {
+        stop();
         this.mediaPlayer.reset();
         try {
-            //mediaPlayer.setDataSource(getResources().openRawResourceFd(playList.get(index)).getFileDescriptor());
-            //mediaPlayer.setDataSource(this, Uri.parse("android.resource://"
-            //        + MainPlayerActivity.PACKAGE_NAME + playList.get(index)));
             this.currentSongIndex = index;
-            Log.d(TAG, "Select song with index " + currentSongIndex);
-            //this.mediaPlayer.prepareAsync();
+            this.mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void playSelectedSong(int index) {
-        stop();
-        selectSong(index);
-        this.mediaPlayer.start();
-        callNotification();
-        Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     //notification when a song is playing
@@ -161,7 +129,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         tapIntent.putExtra("title", this.songs.get(currentSongIndex).getTitle());
         tapIntent.putExtra("text", this.songs.get(currentSongIndex).getComment());
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 23, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         //build notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId")
