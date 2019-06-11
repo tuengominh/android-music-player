@@ -85,10 +85,10 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     //response to click events on buttons
     public void play() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
+            //this.mediaPlayer.stop();
+            this.mediaPlayer.start();
         }
         //this.mediaPlayer.prepareAsync();
-        this.mediaPlayer.start();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
@@ -112,8 +112,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             this.currentSongIndex = this.playList.size() - 1;
         }
         selectSong(this.currentSongIndex);
-        this.mediaPlayer.start();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
+        this.mediaPlayer.start();
     }
 
     public void next() {
@@ -122,8 +122,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             this.currentSongIndex = 0;
         }
         selectSong(this.currentSongIndex);
-        this.mediaPlayer.start();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
+        this.mediaPlayer.start();
     }
 
     //response to click events on list items (songs)
@@ -134,6 +134,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             //mediaPlayer.setDataSource(this, Uri.parse("android.resource://"
             //        + MainPlayerActivity.PACKAGE_NAME + playList.get(index)));
             this.currentSongIndex = index;
+            Log.d(TAG, "Select song with index " + currentSongIndex);
             //this.mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,6 +144,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void playSelectedSong(int index) {
         stop();
         selectSong(index);
+        Log.d(TAG, "Playing song with index " + currentSongIndex);
         this.mediaPlayer.start();
     }
 
