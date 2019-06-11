@@ -71,7 +71,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_player);
 
-        //get context to build resource path in SongUtil
+        //get context to build resource path in other classes
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
         //setup lists of songs
@@ -178,7 +178,10 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         return songs;
     }
 
-    /**@Override
+    /**
+     (long-)click title to see song details
+     click view on map to see map
+     * @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.media_player, menu);

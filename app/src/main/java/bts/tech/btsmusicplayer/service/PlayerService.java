@@ -46,7 +46,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         Log.d(TAG, "Service created");
 
         //create media player
-        //TODO: use Uri or AssetFileDescriptor
+        //TODO: use Uri
         for (int id : playList) {
             mediaPlayer = MediaPlayer.create(this, id);
             Log.d(TAG, "MediaPlayer for " + id + " created");
