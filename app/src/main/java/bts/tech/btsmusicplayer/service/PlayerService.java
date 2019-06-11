@@ -87,7 +87,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
-        this.mediaPlayer.prepareAsync();
+        //this.mediaPlayer.prepareAsync();
         this.mediaPlayer.start();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
