@@ -87,6 +87,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
             //this.mediaPlayer.stop();
             this.mediaPlayer.start();
+            callNotification();
         }
         //this.mediaPlayer.prepareAsync();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
@@ -114,6 +115,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         selectSong(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
         this.mediaPlayer.start();
+        callNotification();
     }
 
     public void next() {
@@ -124,6 +126,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         selectSong(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
         this.mediaPlayer.start();
+        callNotification();
     }
 
     //response to click events on list items (songs)
@@ -145,6 +148,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         stop();
         selectSong(index);
         this.mediaPlayer.start();
+        callNotification();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
