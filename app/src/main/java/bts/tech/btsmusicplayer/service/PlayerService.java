@@ -51,6 +51,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             mediaPlayer = MediaPlayer.create(this, id);
             Log.d(TAG, "MediaPlayer for " + id + " created");
         }
+
+        Log.d(TAG, songs.get(currentSongIndex).getTitle());
+
         this.mediaPlayer.setOnPreparedListener(this);
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -74,11 +77,12 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             if (this.mediaPlayer.isPlaying()) {
                 this.mediaPlayer.stop();
                 this.mediaPlayer.reset();
-                Log.d(TAG, "Playing song with index " + currentSongIndex);
             }
             try {
                 this.mediaPlayer.prepare(); //TODO: prepareAsync() or create() again
                 this.mediaPlayer.start();
+                Log.d(TAG, "Playing song with index " + currentSongIndex);
+                Log.d(TAG, songs.get(currentSongIndex).getTitle());
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -107,6 +111,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         }
         selectAndPlaySong(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
+        Log.d(TAG, songs.get(currentSongIndex).getTitle());
     }
 
     public void next() {
@@ -116,6 +121,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         }
         selectAndPlaySong(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
+        Log.d(TAG, songs.get(currentSongIndex).getTitle());
     }
 
     //response to click events on list items (songs)
