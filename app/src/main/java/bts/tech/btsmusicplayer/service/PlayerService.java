@@ -32,7 +32,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private  IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    //TODO: private Uri uri;
     private MediaPlayer mediaPlayer;
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
@@ -53,20 +52,20 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         mediaPlayer = new MediaPlayer();
 
         for (int id : playList) {
-            //mediaPlayer = MediaPlayer.create(this, id);
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            try {
-                mediaPlayer.setDataSource(this, Uri.parse("android.resource://"
-                        + MainPlayerActivity.PACKAGE_NAME + id));
+            mediaPlayer = MediaPlayer.create(this, id);
+            //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            //try {
+                //mediaPlayer.setDataSource(this, Uri.parse("android.resource://"
+                //        + MainPlayerActivity.PACKAGE_NAME + id));
                 //mediaPlayer.setDataSource(getResources().openRawResourceFd(id).getFileDescriptor());
-                mediaPlayer.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                //mediaPlayer.prepare();
+            //} catch (IOException e) {
+            //    e.printStackTrace();
+            //}
             Log.d(TAG, "MediaPlayer for " + id + " created");
         }
 
-        this.mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.setOnPreparedListener(this);
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -86,11 +85,11 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     //response to click events on buttons
     public void play() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
-            //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
-            //this.mediaPlayer.prepareAsync();
-            //onPrepared(mediaPlayer);
-            Log.d(TAG, "Playing song with index " + currentSongIndex);
+            mediaPlayer.stop();
         }
+        this.mediaPlayer.prepareAsync();
+        this.mediaPlayer.start();
+        Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     public void pause() {
@@ -111,12 +110,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.currentSongIndex--;
         if(this.currentSongIndex < 0) {
             this.currentSongIndex = this.playList.size() - 1;
-            selectSong(this.currentSongIndex);
-        } else {
-            selectSong(this.currentSongIndex);
         }
-        //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
-        //onPrepared(mediaPlayer);
+        selectSong(this.currentSongIndex);
+        this.mediaPlayer.start();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
@@ -124,25 +120,30 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.currentSongIndex++;
         if(this.currentSongIndex > this.playList.size() - 1) {
             this.currentSongIndex = 0;
-            selectSong(this.currentSongIndex);
-        } else {
-            selectSong(this.currentSongIndex);
         }
-        //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
-        //onPrepared(mediaPlayer);
+        selectSong(this.currentSongIndex);
+        this.mediaPlayer.start();
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     //response to click events on list items (songs)
     public void selectSong(int index) {
-        stop();
         this.mediaPlayer.reset();
         try {
+            //mediaPlayer.setDataSource(getResources().openRawResourceFd(playList.get(index)).getFileDescriptor());
+            //mediaPlayer.setDataSource(this, Uri.parse("android.resource://"
+            //        + MainPlayerActivity.PACKAGE_NAME + playList.get(index)));
             this.currentSongIndex = index;
             //this.mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void playSelectedSong(int index) {
+        stop();
+        selectSong(index);
+        this.mediaPlayer.start();
     }
 
     //notification when a song is playing
