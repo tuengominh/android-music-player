@@ -46,6 +46,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         Log.d(TAG, "Service created");
 
         //create media player
+        //TODO: use Uri or AssetFileDescriptor
         for (int id : playList) {
             mediaPlayer = MediaPlayer.create(this, id);
             Log.d(TAG, "MediaPlayer for " + id + " created");
@@ -76,7 +77,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
                 Log.d(TAG, "Playing song with index " + currentSongIndex);
             }
             try {
-                this.mediaPlayer.prepareAsync();
+                this.mediaPlayer.prepare(); //TODO: prepareAsync() or create() again
+                this.mediaPlayer.start();
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -122,8 +124,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.mediaPlayer.reset();
         try {
             this.currentSongIndex = index;
-            //this.mediaPlayer.start();
-            this.mediaPlayer.prepareAsync();
+            this.mediaPlayer.prepare(); //TODO: prepareAsync() or create() again
+            this.mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
