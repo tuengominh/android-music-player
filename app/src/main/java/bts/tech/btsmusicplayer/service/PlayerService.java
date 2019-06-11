@@ -69,11 +69,18 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //response to click events on buttons
     public void play() {
-        if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
-            this.mediaPlayer.stop();
-            Log.d(TAG, "Playing song with index " + currentSongIndex);
+        if (this.mediaPlayer != null) {
+            if (this.mediaPlayer.isPlaying()) {
+                this.mediaPlayer.stop();
+                this.mediaPlayer.reset();
+                Log.d(TAG, "Playing song with index " + currentSongIndex);
+            }
+            try {
+                this.mediaPlayer.prepareAsync();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
-        this.mediaPlayer.start();
     }
 
     public void pause() {
@@ -86,6 +93,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void stop() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
             this.mediaPlayer.stop();
+            this.mediaPlayer.reset();
             Log.d(TAG, "MediaPlayer stopped");
         }
     }
@@ -95,7 +103,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if(this.currentSongIndex < 0) {
             this.currentSongIndex = this.playList.size() - 1;
         }
-        selectSong(this.currentSongIndex);
+        selectAndPlaySong(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
@@ -104,17 +112,18 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if(this.currentSongIndex > this.playList.size() - 1) {
             this.currentSongIndex = 0;
         }
-        selectSong(this.currentSongIndex);
+        selectAndPlaySong(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     //response to click events on list items (songs)
-    public void selectSong(int index) {
+    public void selectAndPlaySong(int index) {
         stop();
         this.mediaPlayer.reset();
         try {
             this.currentSongIndex = index;
-            this.mediaPlayer.start();
+            //this.mediaPlayer.start();
+            this.mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
         }
