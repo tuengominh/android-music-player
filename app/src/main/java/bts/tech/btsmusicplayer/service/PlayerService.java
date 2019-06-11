@@ -4,7 +4,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -50,20 +53,25 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         mediaPlayer = new MediaPlayer();
 
         for (int id : playList) {
-            mediaPlayer = MediaPlayer.create(this, id);
+            //mediaPlayer = MediaPlayer.create(this, id);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            try {
+                mediaPlayer.setDataSource(this, Uri.parse("android.resource://"
+                        + MainPlayerActivity.PACKAGE_NAME + id));
+                //mediaPlayer.setDataSource(getResources().openRawResourceFd(id).getFileDescriptor());
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Log.d(TAG, "MediaPlayer for " + id + " created");
         }
 
-        //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        //mediaPlayer.setDataSource(getApplicationContext(), this.uri);
-        //mediaPlayer.prepare();
-
         this.mediaPlayer.setOnPreparedListener(this);
-        //this.mediaPlayer.prepareAsync();
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                mp.stop();
                 mp.release();
             }
         });
@@ -79,7 +87,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void play() {
         if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
             //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
-            onPrepared(mediaPlayer);
+            //this.mediaPlayer.prepareAsync();
+            //onPrepared(mediaPlayer);
             Log.d(TAG, "Playing song with index " + currentSongIndex);
         }
     }
@@ -107,7 +116,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             selectSong(this.currentSongIndex);
         }
         //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
-        onPrepared(mediaPlayer);
+        //onPrepared(mediaPlayer);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
@@ -120,16 +129,17 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             selectSong(this.currentSongIndex);
         }
         //mediaPlayer = MediaPlayer.create(this, playList.get(currentSongIndex));
-        onPrepared(mediaPlayer);
+        //onPrepared(mediaPlayer);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     //response to click events on list items (songs)
     public void selectSong(int index) {
-        this.mediaPlayer.release();
+        stop();
         this.mediaPlayer.reset();
         try {
             this.currentSongIndex = index;
+            //this.mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
         }
