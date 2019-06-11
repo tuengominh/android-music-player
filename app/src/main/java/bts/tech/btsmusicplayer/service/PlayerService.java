@@ -144,8 +144,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void playSelectedSong(int index) {
         stop();
         selectSong(index);
-        Log.d(TAG, "Playing song with index " + currentSongIndex);
         this.mediaPlayer.start();
+        Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
     //notification when a song is playing
