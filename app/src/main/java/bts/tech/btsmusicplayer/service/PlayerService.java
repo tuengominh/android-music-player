@@ -29,13 +29,13 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private  IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private MediaPlayer mediaPlayer = new MediaPlayer();
+    private MediaPlayer mediaPlayer;
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
     private int currentSongIndex = 0;
 
+    //constructors
     public PlayerService() { }
-
     public PlayerService(IBinder serviceInfo) {
         this.iBinder = serviceInfo;
     }
@@ -46,16 +46,16 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         Log.d(TAG, "Service created");
 
         //create media player
-        //TODO: use Uri
+        //TODO: use Uri.parse() & prepareAsync()
+        mediaPlayer = new MediaPlayer();
+
         for (int id : playList) {
             mediaPlayer = MediaPlayer.create(this, id);
             Log.d(TAG, "MediaPlayer for " + id + " created");
         }
-
         Log.d(TAG, songs.get(currentSongIndex).getTitle());
 
-        this.mediaPlayer.setOnPreparedListener(this);
-
+        mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -73,14 +73,13 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //response to click events on buttons
     public void play() {
-        if (this.mediaPlayer != null) {
-            if (this.mediaPlayer.isPlaying()) {
-                this.mediaPlayer.stop();
-                this.mediaPlayer.reset();
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
             }
             try {
-                this.mediaPlayer.prepare(); //TODO: prepareAsync() or create() again
-                this.mediaPlayer.start();
+                //TODO: prepareAsync()
+                mediaPlayer.start();
                 Log.d(TAG, "Playing song with index " + currentSongIndex);
                 Log.d(TAG, songs.get(currentSongIndex).getTitle());
             } catch (Exception e){
@@ -90,16 +89,15 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     public void pause() {
-        if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
-            this.mediaPlayer.pause();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
             Log.d(TAG, "MediaPlayer paused");
         }
     }
 
     public void stop() {
-        if (this.mediaPlayer != null && this.mediaPlayer.isPlaying()) {
-            this.mediaPlayer.stop();
-            this.mediaPlayer.reset();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
             Log.d(TAG, "MediaPlayer stopped");
         }
     }
@@ -126,14 +124,15 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //response to click events on list items (songs)
     public void selectAndPlaySong(int index) {
-        stop();
-        this.mediaPlayer.reset();
-        try {
-            this.currentSongIndex = index;
-            this.mediaPlayer.prepare(); //TODO: prepareAsync() or create() again
-            this.mediaPlayer.start();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (mediaPlayer != null) {
+            stop();
+            mediaPlayer.reset();
+            try {
+                this.currentSongIndex = index;
+                mediaPlayer.start(); //TODO: prepareAsync()
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

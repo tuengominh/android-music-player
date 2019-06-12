@@ -26,7 +26,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activity_map__fr__map);
         mapFragment.getMapAsync(this);
@@ -45,9 +45,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map.getUiSettings().setZoomControlsEnabled(true);
 
         // Add markers to countries
-        //TODO: use Utils add markers to all countries
+        //TODO: use MapUtil to add markers to all countries
         LatLng brazil = new LatLng(41, 2);
-
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(brazil, 14));
 
         map.setOnMapClickListener(this);
@@ -55,17 +54,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map.setOnInfoWindowClickListener(this);
     }
 
+    //TODO: not allow create Marker on map click
     @Override
     public void onMapClick(LatLng latLng) {
         createMarker(latLng);
-        //moveCamera(latLng)
-
+        //TODO: moveCamera(latLng);
     }
 
     private void createMarker(LatLng latLng) {
         map.addMarker(new MarkerOptions().position(latLng).title("Marker for " + latLng.toString())); //TODO: bensoundbrazilsamba
     }
 
+    //TODO: click to return song detail (with button linked to MainPlayerActivity) below the map fragment
+    // => revise activity_map.xml layout to inlcude song detail layout
     @Override
     public boolean onMarkerClick(Marker marker) {
         return showToast(marker);
@@ -75,7 +76,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
         return false;
     }
-
     @Override
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
