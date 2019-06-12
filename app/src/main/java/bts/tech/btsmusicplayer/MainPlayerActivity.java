@@ -22,6 +22,7 @@ import java.util.List;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
 import bts.tech.btsmusicplayer.util.SongUtil;
+import bts.tech.btsmusicplayer.view.activity.MapActivity;
 import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 
 public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -157,6 +158,8 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.activity_main_player__btn__map:
                 Log.d(TAG,"Go to Map");
+                Intent intent = new Intent(this, MapActivity.class);
+                startActivity(intent);
                 break;
             default:
                 Log.w(TAG, "Not clickable");

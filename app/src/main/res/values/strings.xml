@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">BTS Music</string>
 
-    <string name="title_activity_notification">Notification</string>
+    <string name="title_activity_notification">Now Playing</string>
     <string name="listview_header">BTS Music Collection</string>
     <string name="img_content_description">TODO</string>
+    <string name="title_activity_map">BTS Music Map</string>
 </resources>
