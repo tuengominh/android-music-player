@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/activity_notification__img__song__icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/img_content_description"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,8 +25,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/activity_notification__img__song__icon"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,6 +47,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_notification__img__song__icon" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

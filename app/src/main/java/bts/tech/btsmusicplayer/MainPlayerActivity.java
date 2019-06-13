@@ -97,14 +97,15 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         this.btnNext = findViewById(R.id.activity_main_player__btn__next);
         this.btnNext.setOnClickListener(this);
 
+        this.btnMap = findViewById(R.id.activity_main_player__btn__map);
+        this.btnMap.setOnClickListener(this);
+
+        //setup list view
         this.listView = findViewById(R.id.activity_main_player__song__list__view);
         View listViewHeader = LayoutInflater.from(this).inflate(R.layout.listview_header, null);
         listView.addHeaderView(listViewHeader);
         this.listView.setAdapter(new SongListAdapter(this,R.layout.song_list_adapter, songs));
         this.listView.setOnItemClickListener(this);
-
-        this.btnMap = findViewById(R.id.activity_main_player__btn__map);
-        this.btnMap.setOnClickListener(this);
     }
 
     //bind PlayerService within a Thread object
@@ -181,7 +182,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         return songs;
     }
 
-    //TODO: Context Menu
+    //TODO: Menu
     /**
      (long-)click title to see song details
      click view on map to see map

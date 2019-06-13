@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -93,6 +92,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map.moveCamera(CameraUpdateFactory.newLatLng(MapUtil.getLatLng(songs.get(0).getCountry())));
         map.setOnMarkerClickListener(this);
 
+        //bind the service 'PlayerService' in a Thread object
         final Intent serviceIntent = new Intent(this, PlayerService.class);
         Thread thread = new Thread() {
             @Override
@@ -101,17 +101,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         };
         thread.start();
-
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
 
+        //zoom in 10x selected marker
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 10));
         currentMarker = marker;
-        Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
 
-        //TODO: inflate custom image views & text views
+        //inflate custom image views & text views for current marker
         final ImageView songIcon = findViewById(R.id.activity_map__flag__icon);
         final TextView songTitle = findViewById(R.id.activity_map__tv__title);
         final TextView songDuration = findViewById(R.id.activity_map__tv__duration);
@@ -127,21 +126,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 songComment.setText(song.getComment());
             }
         }
-
         return true;
     }
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()){
             case R.id.activity_map__btn__play:
                 Log.d(TAG,"Prepare to play " + currentMarker.getTitle());
                 for (int i = 0; i < songs.size() - 1; i++) {
                     if (songs.get(i).getTitle().equals(currentMarker.getTitle())) {
-                        Log.d(TAG, "Playing song with index " + i);
                         if (isBound) {
-                            Toast.makeText(this, "Now playing " + currentMarker.getTitle(), Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "Playing song with index " + i);
                             this.playerService.selectAndPlaySong(i);
                         }
                     }

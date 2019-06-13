@@ -18,7 +18,6 @@ import java.util.Random;
 import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
-import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
 
 public class PlayerService extends Service implements MediaPlayer.OnPreparedListener {

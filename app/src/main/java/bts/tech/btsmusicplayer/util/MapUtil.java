@@ -2,8 +2,6 @@ package bts.tech.btsmusicplayer.util;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import bts.tech.btsmusicplayer.R;
-
 public class MapUtil {
 
     /** Util class used to get location information of countries
@@ -35,5 +33,4 @@ public class MapUtil {
         }
         return latLng;
     }
-
 }
