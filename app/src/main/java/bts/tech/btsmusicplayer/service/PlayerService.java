@@ -31,8 +31,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     //fields to handle MediaPlayer
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
-    private MediaPlayer mp;
-    private int currentSongIndex = 0;
+    private MediaPlayer mp = new MediaPlayer();
+    private int currentSongIndex;
 
     //constructors
     public PlayerService() { }
@@ -47,9 +47,10 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
         //create media player
         //TODO: use Uri.parse() & prepareAsync()
-        mp = MediaPlayer.create(this, playList.get(currentSongIndex));
+        mp = MediaPlayer.create(this, playList.get(0));
         mp.setOnPreparedListener(this);
         mp.setOnCompletionListener(this);
+        currentSongIndex = 0;
     }
 
     @Override
@@ -66,10 +67,11 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //response to click events on buttons
     public void play() {
-        if (mp != null) {
-            mp = MediaPlayer.create(this, playList.get(currentSongIndex));
-            playByMediaPlayer(mp);
+        if (mp == null) {
+            mp = MediaPlayer.create(this, playList.get(0));
+            currentSongIndex = 0;
         }
+        playByMediaPlayer(mp);
     }
 
     public void pause() {
@@ -108,17 +110,14 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //response to click events on list items (songs)
     public void playSongByIndex(int index) {
-        if (mp != null) {
-            this.currentSongIndex = index;
+        if (mp == null) {
             mp = MediaPlayer.create(this, playList.get(index));
-            playByMediaPlayer(mp);
+            currentSongIndex = index;
         }
+        playByMediaPlayer(mp);
     }
 
     private void playByMediaPlayer(MediaPlayer mp) {
-        if (mp.isPlaying()) {
-            mp.stop();
-        }
         try {
             mp.setOnPreparedListener(this);
             mp.setOnCompletionListener(this);

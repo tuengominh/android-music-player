@@ -25,7 +25,7 @@ import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.MapActivity;
 import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 
-public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     /** This is the main/host activity
      * handling the media player with control buttons
@@ -105,11 +105,6 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         listView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.listview_header, null));
         this.listView.setAdapter(new SongListAdapter(this,R.layout.song_list_adapter, songs));
         this.listView.setOnItemClickListener(this);
-
-        //set listeners while long-clicking list view's items
-        //registerForContextMenu(listView);
-        //listView.setOnItemLongClickListener(this);
-        //listView.setLongClickable(true);
     }
 
     //bind PlayerService within a Thread object
@@ -170,48 +165,18 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    //control click & long-click events on list items (songs)
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "Song no." + position + " clicked");
-        if (isBound) {
-            this.playerService.playSongByIndex(position-1);
-        }
-    }
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG,listView.getItemAtPosition(position).toString() + " onLongClick()");
-        //Do something
-        return true;
-    }
-
-    /**@Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.floating_menu, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
-            case R.id.floating_menu__item__view__info:
-
-                break;
-            case R.id.floating_menu__item__view__map:
-
-                break;
-            case R.id.floating_menu__item__view__similar:
-
-                break;
-        }
-        return super.onContextItemSelected(item);
-    }*/
-
     //getters
     public static List<Integer> getPlayList() { return playList; }
     public static List<Song> getSongs() {
         return songs;
+    }
+
+    //control click events on listview items
+    @Override
+    public void onItemClick (AdapterView < ? > parent, View view,int position, long id){
+        Log.d(TAG, "Song no." + position + " clicked");
+        if (isBound) {
+            this.playerService.playSongByIndex(position - 1);
+        }
     }
 }

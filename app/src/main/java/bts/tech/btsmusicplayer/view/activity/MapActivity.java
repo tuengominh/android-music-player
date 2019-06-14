@@ -146,8 +146,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.activity_map__btn__play:
-                Log.d(TAG,"Prepare to play " + currentMarker.getTitle());
-                playSongInMap();
+                try {
+                    Log.d(TAG,"Prepare to play " + currentMarker.getTitle());
+                    playSongInMap();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.activity_map__btn__back:
                 Log.d(TAG,"Go to Media Player");
