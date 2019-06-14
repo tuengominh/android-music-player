@@ -12,6 +12,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -88,6 +89,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     public void pause() {
+        MediaPlayer mediaPlayer = mediaPlayers.get(currentSongIndex);
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
             Log.d(TAG, "MediaPlayer paused");
@@ -95,6 +97,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     public void stop() {
+        MediaPlayer mediaPlayer = mediaPlayers.get(currentSongIndex);
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
             Log.d(TAG, "MediaPlayer stopped");

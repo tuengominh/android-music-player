@@ -8,11 +8,14 @@ import android.os.Bundle;
 
 import android.os.IBinder;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,7 +28,7 @@ import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.MapActivity;
 import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 
-public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     /** This is the main/host activity
      * handling the media player with control buttons
