@@ -8,14 +8,11 @@ import android.os.Bundle;
 
 import android.os.IBinder;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -178,7 +175,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "Song no." + position + " clicked");
         if (isBound) {
-            this.playerService.selectAndPlaySong(position-1);
+            this.playerService.playSongByIndex(position-1);
         }
     }
 

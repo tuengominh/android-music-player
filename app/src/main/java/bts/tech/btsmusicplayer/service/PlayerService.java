@@ -12,7 +12,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -30,9 +29,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private  IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
+    private MediaPlayer mp;
     private int currentSongIndex = 0;
 
     //constructors
@@ -48,14 +47,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
         //create media player
         //TODO: use Uri.parse() & prepareAsync()
-        for (int id : playList) {
-            this.mediaPlayers.add(MediaPlayer.create(this, id));
-            Log.d(TAG, "MediaPlayer for " + id + " created");
-            Log.d(TAG, mediaPlayers.toString());
-        }
-
-        mediaPlayers.get(currentSongIndex).setOnPreparedListener(this);
-        mediaPlayers.get(currentSongIndex).setOnCompletionListener(this);
+        mp = MediaPlayer.create(this, playList.get(currentSongIndex));
+        mp.setOnPreparedListener(this);
+        mp.setOnCompletionListener(this);
     }
 
     @Override
@@ -72,34 +66,22 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //response to click events on buttons
     public void play() {
-        MediaPlayer mediaPlayer = mediaPlayers.get(currentSongIndex);
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-            }
-            try {
-                mediaPlayer.start();
-                callNotification();
-                Log.d(TAG, "Playing song with index " + currentSongIndex);
-                Log.d(TAG, songs.get(currentSongIndex).getTitle());
-            } catch (Exception e){
-                e.printStackTrace();
-            }
+        if (mp != null) {
+            mp = MediaPlayer.create(this, playList.get(currentSongIndex));
+            playByMediaPlayer(mp);
         }
     }
 
     public void pause() {
-        MediaPlayer mediaPlayer = mediaPlayers.get(currentSongIndex);
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+        if (mp != null && mp.isPlaying()) {
+            mp.pause();
             Log.d(TAG, "MediaPlayer paused");
         }
     }
 
     public void stop() {
-        MediaPlayer mediaPlayer = mediaPlayers.get(currentSongIndex);
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
+        if (mp != null && mp.isPlaying()) {
+            mp.stop();
             Log.d(TAG, "MediaPlayer stopped");
         }
     }
@@ -109,7 +91,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if(this.currentSongIndex < 0) {
             this.currentSongIndex = this.playList.size() - 1;
         }
-        selectAndPlaySong(this.currentSongIndex);
+        playSongByIndex(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
         Log.d(TAG, songs.get(currentSongIndex).getTitle());
     }
@@ -119,20 +101,29 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if(this.currentSongIndex > this.playList.size() - 1) {
             this.currentSongIndex = 0;
         }
-        selectAndPlaySong(this.currentSongIndex);
+        playSongByIndex(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
         Log.d(TAG, songs.get(currentSongIndex).getTitle());
     }
 
     //response to click events on list items (songs)
-    public void selectAndPlaySong(int index) {
-        MediaPlayer mediaPlayer = mediaPlayers.get(index);
-        stop();
-        mediaPlayer.reset();
-        try {
+    public void playSongByIndex(int index) {
+        if (mp != null) {
             this.currentSongIndex = index;
-            mediaPlayer.start();
-            callNotification();
+            mp = MediaPlayer.create(this, playList.get(index));
+            playByMediaPlayer(mp);
+        }
+    }
+
+    private void playByMediaPlayer(MediaPlayer mp) {
+        if (mp.isPlaying()) {
+            mp.stop();
+        }
+        try {
+            mp.setOnPreparedListener(this);
+            mp.setOnCompletionListener(this);
+            Log.d(TAG, "Playing song with index " + currentSongIndex);
+            Log.d(TAG, songs.get(currentSongIndex).getTitle());
         } catch (Exception e) {
             e.printStackTrace();
         }
