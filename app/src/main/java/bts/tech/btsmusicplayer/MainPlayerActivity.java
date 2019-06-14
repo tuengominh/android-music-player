@@ -102,10 +102,14 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
 
         //setup list view
         this.listView = findViewById(R.id.activity_main_player__song__list__view);
-        View listViewHeader = LayoutInflater.from(this).inflate(R.layout.listview_header, null);
-        listView.addHeaderView(listViewHeader);
+        listView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.listview_header, null));
         this.listView.setAdapter(new SongListAdapter(this,R.layout.song_list_adapter, songs));
         this.listView.setOnItemClickListener(this);
+
+        //set listeners while long-clicking list view's items
+        //registerForContextMenu(listView);
+        //listView.setOnItemLongClickListener(this);
+        //listView.setLongClickable(true);
     }
 
     //bind PlayerService within a Thread object
@@ -159,15 +163,14 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.activity_main_player__btn__map:
                 Log.d(TAG,"Go to Map");
-                Intent intent = new Intent(this, MapActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, MapActivity.class));
                 break;
             default:
                 Log.w(TAG, "Not clickable");
         }
     }
 
-    //control click events on list items (songs)
+    //control click & long-click events on list items (songs)
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "Song no." + position + " clicked");
@@ -176,32 +179,39 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG,listView.getItemAtPosition(position).toString() + " onLongClick()");
+        //Do something
+        return true;
+    }
+
+    /**@Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.floating_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.floating_menu__item__view__info:
+
+                break;
+            case R.id.floating_menu__item__view__map:
+
+                break;
+            case R.id.floating_menu__item__view__similar:
+
+                break;
+        }
+        return super.onContextItemSelected(item);
+    }*/
+
     //getters
     public static List<Integer> getPlayList() { return playList; }
     public static List<Song> getSongs() {
         return songs;
     }
-
-    //TODO: Menu
-    /**
-     (long-)click title to see song details
-     click view on map to see map
-     * @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.media_player, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }

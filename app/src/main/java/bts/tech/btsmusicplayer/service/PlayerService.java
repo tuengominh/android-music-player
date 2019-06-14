@@ -20,7 +20,7 @@ import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
 
-public class PlayerService extends Service implements MediaPlayer.OnPreparedListener {
+public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     /** PlayerService is the bound service running MediaPlayer
      * and call notification */
@@ -29,7 +29,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private  IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private MediaPlayer mediaPlayer;
+    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
     private List<Song> songs = MainPlayerActivity.getSongs();
     private List<Integer> playList = MainPlayerActivity.getPlayList();
     private int currentSongIndex = 0;
@@ -47,22 +47,14 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
         //create media player
         //TODO: use Uri.parse() & prepareAsync()
-        mediaPlayer = new MediaPlayer();
-
         for (int id : playList) {
-            mediaPlayer = MediaPlayer.create(this, id);
+            this.mediaPlayers.add(MediaPlayer.create(this, id));
             Log.d(TAG, "MediaPlayer for " + id + " created");
+            Log.d(TAG, mediaPlayers.toString());
         }
-        Log.d(TAG, songs.get(currentSongIndex).getTitle());
 
-        mediaPlayer.setOnPreparedListener(this);
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.stop();
-                mp.release();
-            }
-        });
+        mediaPlayers.get(currentSongIndex).setOnPreparedListener(this);
+        mediaPlayers.get(currentSongIndex).setOnCompletionListener(this);
     }
 
     @Override
@@ -71,15 +63,22 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         callNotification();
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp.stop();
+        mp.release();
+    }
+
     //response to click events on buttons
     public void play() {
+        MediaPlayer mediaPlayer = mediaPlayers.get(currentSongIndex);
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
             }
             try {
-                //TODO: prepareAsync()
                 mediaPlayer.start();
+                callNotification();
                 Log.d(TAG, "Playing song with index " + currentSongIndex);
                 Log.d(TAG, songs.get(currentSongIndex).getTitle());
             } catch (Exception e){
@@ -124,15 +123,15 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //response to click events on list items (songs)
     public void selectAndPlaySong(int index) {
-        if (mediaPlayer != null) {
-            stop();
-            mediaPlayer.reset();
-            try {
-                this.currentSongIndex = index;
-                mediaPlayer.start(); //TODO: prepareAsync()
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        MediaPlayer mediaPlayer = mediaPlayers.get(index);
+        stop();
+        mediaPlayer.reset();
+        try {
+            this.currentSongIndex = index;
+            mediaPlayer.start();
+            callNotification();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

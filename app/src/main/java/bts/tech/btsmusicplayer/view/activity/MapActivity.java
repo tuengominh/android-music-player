@@ -31,7 +31,7 @@ import bts.tech.btsmusicplayer.service.PlayerService;
 import bts.tech.btsmusicplayer.util.MapUtil;
 import bts.tech.btsmusicplayer.util.SongUtil;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, View.OnClickListener {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, View.OnClickListener, GoogleMap.OnInfoWindowClickListener {
 
     /** Manipulates the Google Maps activity */
 
@@ -84,10 +84,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
 
-        // Add markers to countries and move camera the the first country (Brazil)
+        //add markers to countries and move camera the the first country (Brazil)
         for (Song song : songs) {
             LatLng latLng = MapUtil.getLatLng(song.getCountry());
-            map.addMarker(new MarkerOptions().position(latLng).title(song.getTitle()));
+            map.addMarker(new MarkerOptions().position(latLng).title(song.getComment()));
         }
         map.moveCamera(CameraUpdateFactory.newLatLng(MapUtil.getLatLng(songs.get(0).getCountry())));
         map.setOnMarkerClickListener(this);
@@ -101,6 +101,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         };
         thread.start();
+
+        //add info windows
+        map.setOnInfoWindowClickListener(this);
     }
 
     @Override
@@ -118,7 +121,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         final TextView songComment = findViewById(R.id.activity_map__tv__comment);
 
         for (Song song : songs) {
-            if (song.getTitle().equals(currentMarker.getTitle())) {
+            if (song.getComment().equals(currentMarker.getTitle())) {
                 songIcon.setImageResource(SongUtil.getFlagResId(song.getCountry()));
                 songTitle.setText(song.getTitle());
                 songDuration.setText(song.getDuration());
@@ -126,7 +129,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 songComment.setText(song.getComment());
             }
         }
+
+        //show info window
+        marker.showInfoWindow();
         return true;
+    }
+
+    //response to click events on info window
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        currentMarker = marker;
+        playSongInMap();
     }
 
     @Override
@@ -134,19 +147,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         switch (v.getId()){
             case R.id.activity_map__btn__play:
                 Log.d(TAG,"Prepare to play " + currentMarker.getTitle());
-                for (int i = 0; i < songs.size() - 1; i++) {
-                    if (songs.get(i).getTitle().equals(currentMarker.getTitle())) {
-                        if (isBound) {
-                            Log.d(TAG, "Playing song with index " + i);
-                            this.playerService.selectAndPlaySong(i);
-                        }
-                    }
-                }
+                playSongInMap();
                 break;
             case R.id.activity_map__btn__back:
                 Log.d(TAG,"Go to Media Player");
-                Intent intent = new Intent(this, MainPlayerActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, MainPlayerActivity.class));
                 break;
             default:
                 Log.w(TAG, "Not clickable");
@@ -161,6 +166,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             unbindService(serviceConnection);
             isBound = false;
             playerService.stopSelf();
+        }
+    }
+
+    private void playSongInMap() {
+        for (int i = 0; i < songs.size() - 1; i++) {
+            if (songs.get(i).getComment().equals(currentMarker.getTitle())) {
+                if (isBound) {
+                    Log.d(TAG, "Playing song with index " + i);
+                    this.playerService.selectAndPlaySong(i);
+                }
+            }
         }
     }
 }
