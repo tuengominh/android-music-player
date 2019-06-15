@@ -1,5 +1,8 @@
 package bts.tech.btsmusicplayer;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,14 +18,17 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
 import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.MapActivity;
+import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
 import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 
 public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -57,6 +63,8 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         @Override
         public void onServiceConnected(ComponentName name, IBinder serviceInfo) {
             playerService = new PlayerService(serviceInfo);
+            playerService.playByIndex(MainPlayerActivity.this, 0);
+            callNotification(0);
             isBound = true;
         }
 
@@ -121,17 +129,6 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         thread.start();
     }
 
-    //stop PlayerService if isFinishing()
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isFinishing()) {
-            unbindService(serviceConnection);
-            isBound = false;
-            playerService.stopSelf();
-        }
-    }
-
     //control click events on buttons
     @Override
     public void onClick(View v) {
@@ -150,11 +147,13 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.activity_main_player__btn__prev:
                 Log.d(TAG,"Go back");
-                this.playerService.previous();
+                this.playerService.previous(this);
+                callNotification(this.playerService.currentSongIndex);
                 break;
             case R.id.activity_main_player__btn__next:
                 Log.d(TAG,"Go next");
-                this.playerService.next();
+                this.playerService.next(this);
+                callNotification(this.playerService.currentSongIndex);
                 break;
             case R.id.activity_main_player__btn__map:
                 Log.d(TAG,"Go to Map");
@@ -171,12 +170,54 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         return songs;
     }
 
-    //control click events on listview items
+    //control click events on list view items
     @Override
     public void onItemClick (AdapterView < ? > parent, View view,int position, long id){
         Log.d(TAG, "Song no." + position + " clicked");
         if (isBound) {
-            this.playerService.playByIndex(position - 1);
+            this.playerService.playByIndex(this, position - 1);
+            callNotification(position - 1);
         }
+    }
+
+    //notification when a song is playing
+    public void callNotification(int index) {
+
+        //send data to NotificationActivity
+        Intent tapIntent = new Intent(this, NotificationActivity.class);
+        tapIntent.putExtra("index", index);
+        tapIntent.putExtra("title", SongUtil.getSongList().get(index).getTitle());
+        tapIntent.putExtra("text", SongUtil.getSongList().get(index).getComment());
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 23, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        //build notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId")
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.ic_noti_foreground)
+                .setContentTitle("Now Playing")
+                .setContentText(SongUtil.getSongList().get(index).getTitle())
+                .setContentIntent(pendingIntent);
+
+        ((NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE))
+                .notify(new Random().nextInt(4), builder.build());
+    }
+
+    //stop PlayerService if isFinishing()
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isFinishing()) {
+            unbindService(serviceConnection);
+            isBound = false;
+            playerService.stopSelf();
+        }
+    }
+
+    //TODO: when switching to another activity, the music stop
+    @Override
+    protected void onStop() {
+        super.onStop();
+        playerService.stop();
     }
 }

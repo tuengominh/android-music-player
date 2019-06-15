@@ -147,18 +147,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         switch (v.getId()){
             case R.id.activity_map__btn__play:
                 try {
-                    Log.d(TAG,"Prepare to play " + currentMarker.getTitle());
                     playSongInMap();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case R.id.activity_map__btn__back:
-                Log.d(TAG,"Go to Media Player");
                 startActivity(new Intent(this, MainPlayerActivity.class));
                 break;
             default:
                 Log.w(TAG, "Not clickable");
+        }
+    }
+
+    private void playSongInMap() {
+        for (int i = 0; i < songs.size() - 1; i++) {
+            if (songs.get(i).getComment().equals(currentMarker.getTitle())) {
+                if (isBound) {
+                    this.playerService.playByIndex(this, i);
+                }
+            }
         }
     }
 
@@ -173,14 +181,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void playSongInMap() {
-        for (int i = 0; i < songs.size() - 1; i++) {
-            if (songs.get(i).getComment().equals(currentMarker.getTitle())) {
-                if (isBound) {
-                    Log.d(TAG, "Playing song with index " + i);
-                    this.playerService.playByIndex(i);
-                }
-            }
-        }
+    //TODO: when switching to another activity, the music stop
+    @Override
+    protected void onStop() {
+        super.onStop();
+        playerService.stop();
     }
 }
