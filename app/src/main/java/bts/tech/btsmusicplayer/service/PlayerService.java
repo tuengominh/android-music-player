@@ -29,7 +29,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private MediaPlayer mp = new MediaPlayer();
+    private MediaPlayer mp;
     private int currentSongIndex = 0;
 
     //constructors
@@ -44,12 +44,16 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "Service created");
+        mp = new MediaPlayer();
         createAndConfigMP(0);
     }
 
     private void createAndConfigMP(int index) {
         try {
+            Log.d(TAG, SongUtil.getSongList().get(index).getResPath());
+            Log.d(TAG, this.toString());
             mp = MediaPlayer.create(this, SongUtil.getSongList().get(index).getResId());
+            Log.d(TAG, mp.toString());
             //mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
             //mp.setDataSource(this, Uri.parse(SongUtil.getSongList().get(index).getResPath()));
             //mp.prepare();
@@ -82,6 +86,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if (mp == null) return;
         if (mp.isPlaying()) {
             mp.stop();
+            mp.reset();
             Log.d(TAG, "MediaPlayer stopped");
         }
     }
@@ -108,7 +113,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void playByIndex(int index) {
         try {
             stop();
-            mp.reset();
+            mp = new MediaPlayer();
             createAndConfigMP(index);
             play();
         } catch (Exception e) {
