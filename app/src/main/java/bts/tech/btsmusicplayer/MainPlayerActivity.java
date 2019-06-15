@@ -34,7 +34,8 @@ import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     /** This is the main/host activity
-     * handling the media player with control buttons
+     * handling the media player with control buttons,
+     * call notifications,
      * inflating the menu, and
      * handling the list view with all songs */
 
@@ -64,11 +65,12 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         public void onServiceConnected(ComponentName name, IBinder serviceInfo) {
             playerService = new PlayerService(serviceInfo);
 
-            //when connect to player service for the first time, play 1st song
-            //play music of Map Activity when going back to main player activity
+            //when this activity connect to PlayerService for the 1st time, it will automatically play the 1st song
+            //when users navigate to this activity from MapActivity, it will play the current playing song in MapActivity
             int index = getIntent().getIntExtra("index", 0);
             playerService.playByIndex(MainPlayerActivity.this, index);
             callNotification(index);
+
             isBound = true;
         }
 
@@ -78,7 +80,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
     };
 
-    //onCreate()
+    //onCreate() lifecycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +114,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         this.btnMap = findViewById(R.id.activity_main_player__btn__map);
         this.btnMap.setOnClickListener(this);
 
-        //setup list view
+        //setup list view and pass data to SongListAdapter
         this.listView = findViewById(R.id.activity_main_player__song__list__view);
         listView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.listview_header, null));
         this.listView.setAdapter(new SongListAdapter(this,R.layout.song_list_adapter, songs));
@@ -123,7 +125,6 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onStart() {
         super.onStart();
-
         final Intent serviceIntent = new Intent(this, PlayerService.class);
         Thread thread = new Thread() {
             @Override
@@ -139,29 +140,23 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.activity_main_player__btn__play:
-                Log.d(TAG,"Played");
                 this.playerService.play();
                 break;
             case R.id.activity_main_player__btn__pause:
-                Log.d(TAG,"Paused");
                 this.playerService.pause();
                 break;
             case R.id.activity_main_player__btn__stop:
-                Log.d(TAG,"Stopped");
                 this.playerService.stop();
                 break;
             case R.id.activity_main_player__btn__prev:
-                Log.d(TAG,"Go back");
                 this.playerService.previous(this);
                 callNotification(this.playerService.currentSongIndex);
                 break;
             case R.id.activity_main_player__btn__next:
-                Log.d(TAG,"Go next");
                 this.playerService.next(this);
                 callNotification(this.playerService.currentSongIndex);
                 break;
             case R.id.activity_main_player__btn__map:
-                Log.d(TAG,"Go to Map");
                 startActivity(new Intent(this, MapActivity.class));
                 break;
             default:
@@ -185,7 +180,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    //notification when a song is playing
+    //call customized notification when a song is playing
     public void callNotification(int index) {
 
         //send data to NotificationActivity
@@ -220,6 +215,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     }
 
     //TODO: do not stop music if switching to NotificationActivity
+    //stop PlayerService if switching to another activity
     @Override
     protected void onStop() {
         super.onStop();

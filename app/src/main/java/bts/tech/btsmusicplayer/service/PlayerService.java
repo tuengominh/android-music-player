@@ -14,11 +14,9 @@ import bts.tech.btsmusicplayer.util.SongUtil;
 
 public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
-    /**
-     * PlayerService is the bound service running MediaPlayer
-     * and call notification
-     */
+    /** PlayerService is the bound service handling MediaPlayer */
 
+    //fields to get context & handle binder
     private static final String TAG = PlayerService.class.getSimpleName();
     private IBinder iBinder = new Binder();
 
@@ -28,39 +26,21 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //constructors
     public PlayerService() { }
-
     public PlayerService(IBinder serviceInfo) {
         this.iBinder = serviceInfo;
     }
 
+    //onCreate() lifecycle
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "Service created");
     }
 
-    private void createAndConfigMP(Context ctx, int index) {
-        try {
-            Log.d(TAG, SongUtil.getSongList().get(index).getResPath());
-            Log.d(TAG, this.toString());
-            mp = MediaPlayer.create(ctx, SongUtil.getSongList().get(index).getResId());
-            Log.d(TAG, mp.toString());
-            //mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            //mp.setDataSource(this, Uri.parse(SongUtil.getSongList().get(index).getResPath()));
-            //mp.prepare();
-            mp.setOnPreparedListener(this);
-            currentSongIndex = index;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    //response to click events on buttons
+    //response to click events on buttons and manipulates MediaPlayer
     public void play() {
         if (mp == null) return;
         if (!mp.isPlaying()) {
             mp.start();
-            Log.d(TAG, "MediaPlayer played");
         }
     }
 
@@ -68,7 +48,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if (mp == null) return;
         if (mp.isPlaying()) {
             mp.pause();
-            Log.d(TAG, "MediaPlayer paused");
         }
     }
 
@@ -77,7 +56,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if (mp.isPlaying()) {
             mp.stop();
             mp.reset();
-            Log.d(TAG, "MediaPlayer stopped");
         }
     }
 
@@ -99,7 +77,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         Log.d(TAG, "Playing song with index " + currentSongIndex);
     }
 
-    //response to click events on list items (songs)
+    //response to click events on list view items (songs)
     public void playByIndex(Context ctx, int index) {
         try {
             stop();
@@ -111,19 +89,24 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         }
     }
 
-    //binding & unbinding methods
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        Log.d(TAG, "Service bounded");
-        return iBinder;
+    //create and configure media player for each song item
+    private void createAndConfigMP(Context ctx, int index) {
+        try {
+            Log.d(TAG, SongUtil.getSongList().get(index).getResPath());
+            Log.d(TAG, this.toString());
+            mp = MediaPlayer.create(ctx, SongUtil.getSongList().get(index).getResId());
+            Log.d(TAG, mp.toString());
+            //mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            //mp.setDataSource(this, Uri.parse(SongUtil.getSongList().get(index).getResPath()));
+            //mp.prepare();
+            mp.setOnPreparedListener(this);
+            currentSongIndex = index;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public boolean onUnbind(Intent intent) {
-        return false;
-    }
-
+    //methods implemented by MediaPlayer's interfaces
     @Override
     public void onPrepared(MediaPlayer mp) {
         play();
@@ -137,6 +120,18 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        return false;
+    }
+
+    //binding & unbinding methods
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return iBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
         return false;
     }
 }

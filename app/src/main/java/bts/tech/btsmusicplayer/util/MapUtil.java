@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MapUtil {
 
-    /** Util class used to get location information of countries
+    /** Util class used to get location information based on song titles
      * by default it will be Barcelona */
 
     public static LatLng getLatLng(String title) {

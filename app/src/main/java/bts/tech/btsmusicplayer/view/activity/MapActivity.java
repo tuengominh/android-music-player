@@ -73,11 +73,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used
+        //obtain the SupportMapFragment and get notified when the map is ready to be used
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activity_map__fr__map);
         mapFragment.getMapAsync(this);
 
+        //setup buttons
         this.btnPlay = findViewById(R.id.activity_map__btn__play);
         this.btnPlay.setOnClickListener(this);
 
@@ -85,18 +86,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         this.btnGoBack.setOnClickListener(this);
     }
 
+    //when the map is ready to use
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
 
-        //add markers to countries and move camera the the first country (Brazil)
+        //add markers to locations of songs and move camera the the first location (Brazil)
         for (Song song : songs) {
             LatLng latLng = MapUtil.getLatLng(song.getTitle());
             map.addMarker(new MarkerOptions().position(latLng).title(song.getTitle()));
         }
         map.moveCamera(CameraUpdateFactory.newLatLng(MapUtil.getLatLng(songs.get(0).getTitle())));
         map.setOnMarkerClickListener(this);
+        map.setOnInfoWindowClickListener(this);
 
         //bind the service 'PlayerService' in a Thread object
         final Intent serviceIntent = new Intent(this, PlayerService.class);
@@ -107,19 +110,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         };
         thread.start();
-
-        //add info windows
-        map.setOnInfoWindowClickListener(this);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        //zoom in 10x selected marker
+        //zoom in 10x when clicking marker
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 10));
         currentMarker = marker;
 
-        //inflate custom image views & text views for current marker
+        //inflate custom image views & text views for clicked marker
         final ImageView songIcon = findViewById(R.id.activity_map__flag__icon);
         final TextView songTitle = findViewById(R.id.activity_map__tv__title);
         final TextView songDuration = findViewById(R.id.activity_map__tv__duration);
@@ -148,6 +148,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         playSongInMap();
     }
 
+    //control click events on buttons
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -166,6 +167,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    //play the song related to clicked marker when clicking play button or info windows
     private void playSongInMap() {
         for (int i = 0; i < songs.size(); i++) {
             if (songs.get(i).getTitle().equals(currentMarker.getTitle())) {
@@ -178,7 +180,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    //notification when a song is playing
+    //call notification when a song is playing
     public void callNotification(int index) {
 
         //send data to NotificationActivity
@@ -212,7 +214,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    //send current song to main player activity
+    //send data of current playing song when switching back to MainPlayerActivity
     //TODO: do not stop music if switching to NotificationActivity
     @Override
     protected void onStop() {
@@ -220,7 +222,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         playerService.stop();
         Intent mapIntent = new Intent(this, MainPlayerActivity.class);
         mapIntent.putExtra("index", currentSongIndex);
-        Log.d(TAG,"Intent created");
         startActivity(mapIntent);
     }
 }
