@@ -160,7 +160,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
                 break;
             case R.id.activity_map__btn__back:
-                startActivity(new Intent(this, MainPlayerActivity.class));
+                playerService.stop();
+                //send data of current playing song when switching back to MainPlayerActivity
+                Intent mapIntent = new Intent(this, MainPlayerActivity.class);
+                mapIntent.putExtra("index", currentSongIndex);
+                startActivity(mapIntent);
                 break;
             default:
                 Log.w(TAG, "Not clickable");
@@ -212,16 +216,5 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             isBound = false;
             playerService.stopSelf();
         }
-    }
-
-    //send data of current playing song when switching back to MainPlayerActivity
-    //TODO: do not stop music if switching to NotificationActivity
-    @Override
-    protected void onStop() {
-        super.onStop();
-        playerService.stop();
-        Intent mapIntent = new Intent(this, MainPlayerActivity.class);
-        mapIntent.putExtra("index", currentSongIndex);
-        startActivity(mapIntent);
     }
 }

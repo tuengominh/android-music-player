@@ -157,6 +157,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
                 callNotification(this.playerService.currentSongIndex);
                 break;
             case R.id.activity_main_player__btn__map:
+                playerService.stop();
                 startActivity(new Intent(this, MapActivity.class));
                 break;
             default:
@@ -212,13 +213,5 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
             isBound = false;
             playerService.stopSelf();
         }
-    }
-
-    //TODO: do not stop music if switching to NotificationActivity
-    //stop PlayerService if switching to another activity
-    @Override
-    protected void onStop() {
-        super.onStop();
-        playerService.stop();
     }
 }
