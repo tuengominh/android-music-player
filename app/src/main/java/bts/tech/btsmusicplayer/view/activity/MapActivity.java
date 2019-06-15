@@ -178,7 +178,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (songs.get(i).getComment().equals(currentMarker.getTitle())) {
                 if (isBound) {
                     Log.d(TAG, "Playing song with index " + i);
-                    this.playerService.playSongByIndex(i);
+                    this.playerService.playByIndex(i);
                 }
             }
         }

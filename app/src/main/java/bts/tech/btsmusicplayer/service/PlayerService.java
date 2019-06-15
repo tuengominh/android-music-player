@@ -12,30 +12,30 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import java.util.List;
 import java.util.Random;
 
-import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.R;
-import bts.tech.btsmusicplayer.model.Song;
+import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
 
-public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
-    /** PlayerService is the bound service running MediaPlayer
-     * and call notification */
+    /**
+     * PlayerService is the bound service running MediaPlayer
+     * and call notification
+     */
 
     private static final String TAG = PlayerService.class.getSimpleName();
-    private  IBinder iBinder = new Binder();
+    private IBinder iBinder = new Binder();
 
     //fields to handle MediaPlayer
-    private List<Song> songs = MainPlayerActivity.getSongs();
-    private List<Integer> playList = MainPlayerActivity.getPlayList();
     private MediaPlayer mp = new MediaPlayer();
-    private int currentSongIndex;
+    private int currentSongIndex = 0;
 
     //constructors
-    public PlayerService() { }
+    public PlayerService() {
+    }
+
     public PlayerService(IBinder serviceInfo) {
         this.iBinder = serviceInfo;
     }
@@ -44,45 +44,43 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "Service created");
-
-        //create media player
-        //TODO: use Uri.parse() & prepareAsync()
-        mp = MediaPlayer.create(this, playList.get(0));
-        mp.setOnPreparedListener(this);
-        mp.setOnCompletionListener(this);
-        currentSongIndex = 0;
+        createAndConfigMP(0);
     }
 
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        mp.start();
-        callNotification();
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        mp.stop();
-        mp.release();
+    private void createAndConfigMP(int index) {
+        try {
+            mp = MediaPlayer.create(this, SongUtil.getSongList().get(index).getResId());
+            //mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            //mp.setDataSource(this, Uri.parse(SongUtil.getSongList().get(index).getResPath()));
+            //mp.prepare();
+            mp.setOnPreparedListener(this);
+            currentSongIndex = index;
+            callNotification(index);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //response to click events on buttons
     public void play() {
-        if (mp == null) {
-            mp = MediaPlayer.create(this, playList.get(0));
-            currentSongIndex = 0;
+        if (mp == null) return;
+        if (!mp.isPlaying()) {
+            mp.start();
+            Log.d(TAG, "MediaPlayer played");
         }
-        playByMediaPlayer(mp);
     }
 
     public void pause() {
-        if (mp != null && mp.isPlaying()) {
+        if (mp == null) return;
+        if (mp.isPlaying()) {
             mp.pause();
             Log.d(TAG, "MediaPlayer paused");
         }
     }
 
     public void stop() {
-        if (mp != null && mp.isPlaying()) {
+        if (mp == null) return;
+        if (mp.isPlaying()) {
             mp.stop();
             Log.d(TAG, "MediaPlayer stopped");
         }
@@ -90,52 +88,42 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     public void previous() {
         this.currentSongIndex--;
-        if(this.currentSongIndex < 0) {
-            this.currentSongIndex = this.playList.size() - 1;
+        if (this.currentSongIndex < 0) {
+            this.currentSongIndex = (SongUtil.getSongList().size() - 1);
         }
-        playSongByIndex(this.currentSongIndex);
+        playByIndex(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
-        Log.d(TAG, songs.get(currentSongIndex).getTitle());
     }
 
     public void next() {
         this.currentSongIndex++;
-        if(this.currentSongIndex > this.playList.size() - 1) {
+        if (this.currentSongIndex > (SongUtil.getSongList().size() - 1)) {
             this.currentSongIndex = 0;
         }
-        playSongByIndex(this.currentSongIndex);
+        playByIndex(this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
-        Log.d(TAG, songs.get(currentSongIndex).getTitle());
     }
 
     //response to click events on list items (songs)
-    public void playSongByIndex(int index) {
-        if (mp == null) {
-            mp = MediaPlayer.create(this, playList.get(index));
-            currentSongIndex = index;
-        }
-        playByMediaPlayer(mp);
-    }
-
-    private void playByMediaPlayer(MediaPlayer mp) {
+    public void playByIndex(int index) {
         try {
-            mp.setOnPreparedListener(this);
-            mp.setOnCompletionListener(this);
-            Log.d(TAG, "Playing song with index " + currentSongIndex);
-            Log.d(TAG, songs.get(currentSongIndex).getTitle());
+            stop();
+            mp.reset();
+            createAndConfigMP(index);
+            play();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     //notification when a song is playing
-    private void callNotification() {
+    private void callNotification(int index) {
 
         //send data to NotificationActivity
         Intent tapIntent = new Intent(this, NotificationActivity.class);
-        tapIntent.putExtra("index", this.currentSongIndex);
-        tapIntent.putExtra("title", this.songs.get(currentSongIndex).getTitle());
-        tapIntent.putExtra("text", this.songs.get(currentSongIndex).getComment());
+        tapIntent.putExtra("index", index);
+        tapIntent.putExtra("title", SongUtil.getSongList().get(index).getTitle());
+        tapIntent.putExtra("text", SongUtil.getSongList().get(index).getComment());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 23, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -144,7 +132,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_noti_foreground)
                 .setContentTitle("Now Playing")
-                .setContentText(this.songs.get(currentSongIndex).getTitle())
+                .setContentText(SongUtil.getSongList().get(index).getTitle())
                 .setContentIntent(pendingIntent);
 
         ((NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE))
@@ -161,6 +149,22 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public boolean onUnbind(Intent intent) {
+        return false;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        play();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp.stop();
+        mp.release();
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
         return false;
     }
 }
