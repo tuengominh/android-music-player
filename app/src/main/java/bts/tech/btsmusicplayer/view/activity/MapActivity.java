@@ -1,7 +1,11 @@
 package bts.tech.btsmusicplayer.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
+import java.util.Random;
 
 import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.R;
@@ -47,7 +52,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //fields to control the bound service 'PlayerService'
     private PlayerService playerService;
     private boolean isBound = false;
-    private List<Song> songs = MainPlayerActivity.getSongs();
+    private List<Song> songs = SongUtil.getSongList();
+    private int currentSongIndex = 0;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -86,10 +92,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         //add markers to countries and move camera the the first country (Brazil)
         for (Song song : songs) {
-            LatLng latLng = MapUtil.getLatLng(song.getCountry());
-            map.addMarker(new MarkerOptions().position(latLng).title(song.getComment()));
+            LatLng latLng = MapUtil.getLatLng(song.getTitle());
+            map.addMarker(new MarkerOptions().position(latLng).title(song.getTitle()));
         }
-        map.moveCamera(CameraUpdateFactory.newLatLng(MapUtil.getLatLng(songs.get(0).getCountry())));
+        map.moveCamera(CameraUpdateFactory.newLatLng(MapUtil.getLatLng(songs.get(0).getTitle())));
         map.setOnMarkerClickListener(this);
 
         //bind the service 'PlayerService' in a Thread object
@@ -121,7 +127,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         final TextView songComment = findViewById(R.id.activity_map__tv__comment);
 
         for (Song song : songs) {
-            if (song.getComment().equals(currentMarker.getTitle())) {
+            if (song.getTitle().equals(currentMarker.getTitle())) {
                 songIcon.setImageResource(SongUtil.getFlagResId(song.getCountry()));
                 songTitle.setText(song.getTitle());
                 songDuration.setText(song.getDuration());
@@ -161,13 +167,38 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void playSongInMap() {
-        for (int i = 0; i < songs.size() - 1; i++) {
-            if (songs.get(i).getComment().equals(currentMarker.getTitle())) {
+        for (int i = 0; i < songs.size(); i++) {
+            if (songs.get(i).getTitle().equals(currentMarker.getTitle())) {
                 if (isBound) {
                     this.playerService.playByIndex(this, i);
+                    callNotification(i);
+                    currentSongIndex = i;
                 }
             }
         }
+    }
+
+    //notification when a song is playing
+    public void callNotification(int index) {
+
+        //send data to NotificationActivity
+        Intent tapIntent = new Intent(this, NotificationActivity.class);
+        tapIntent.putExtra("index", index);
+        tapIntent.putExtra("title", SongUtil.getSongList().get(index).getTitle());
+        tapIntent.putExtra("text", SongUtil.getSongList().get(index).getComment());
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 23, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        //build notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId")
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.ic_noti_foreground)
+                .setContentTitle("Now Playing")
+                .setContentText(SongUtil.getSongList().get(index).getTitle())
+                .setContentIntent(pendingIntent);
+
+        ((NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE))
+                .notify(new Random().nextInt(4), builder.build());
     }
 
     //stop PlayerService if isFinishing()
@@ -181,10 +212,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    //TODO: when switching to another activity, the music stop
+    //send current song to main player activity
+    //TODO: do not stop music if switching to NotificationActivity
     @Override
     protected void onStop() {
         super.onStop();
         playerService.stop();
+        Intent mapIntent = new Intent(this, MainPlayerActivity.class);
+        mapIntent.putExtra("index", currentSongIndex);
+        Log.d(TAG,"Intent created");
+        startActivity(mapIntent);
     }
 }

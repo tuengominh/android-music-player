@@ -63,8 +63,12 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         @Override
         public void onServiceConnected(ComponentName name, IBinder serviceInfo) {
             playerService = new PlayerService(serviceInfo);
-            playerService.playByIndex(MainPlayerActivity.this, 0);
-            callNotification(0);
+
+            //when connect to player service for the first time, play 1st song
+            //play music of Map Activity when going back to main player activity
+            int index = getIntent().getIntExtra("index", 0);
+            playerService.playByIndex(MainPlayerActivity.this, index);
+            callNotification(index);
             isBound = true;
         }
 
@@ -119,6 +123,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onStart() {
         super.onStart();
+
         final Intent serviceIntent = new Intent(this, PlayerService.class);
         Thread thread = new Thread() {
             @Override
@@ -214,7 +219,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    //TODO: when switching to another activity, the music stop
+    //TODO: do not stop music if switching to NotificationActivity
     @Override
     protected void onStop() {
         super.onStop();
