@@ -29,7 +29,6 @@ import java.util.Random;
 
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
-import bts.tech.btsmusicplayer.util.MapUtil;
 import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.MapActivity;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
@@ -48,8 +47,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     protected static final String TAG = MainPlayerActivity.class.getSimpleName();
 
     //fields to control lists of songs
-    private static List<Integer> playList = new ArrayList<>();
-    private static List<Song> songs = new ArrayList<>();
+    private static List<Song> songs = SongUtil.getSongList();
 
     //fields of UI items: list view & buttons
     private Button btnPlay;
@@ -95,10 +93,6 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
         //setup lists of songs & list adapter
-        for (Song song : SongUtil.getSongList()) {
-            songs.add(song);
-            playList.add(song.getResId());
-        }
         listAdapter = new SongListAdapter(this,R.layout.song_list_adapter, songs);
 
         //setup buttons
@@ -213,7 +207,6 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     }
 
     //getters
-    public static List<Integer> getPlayList() { return playList; }
     public static List<Song> getSongs() {
         return songs;
     }

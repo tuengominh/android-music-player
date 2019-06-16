@@ -25,11 +25,13 @@ public class SongListAdapter extends ArrayAdapter<Song> {
 
     private Context context;
     private int layoutRes;
+    private List<Song> songs;
 
     public SongListAdapter(@NonNull Context context, @LayoutRes int layoutRes, @NonNull List<Song> songs) {
         super(context, layoutRes, songs);
         this.context = context;
         this.layoutRes = layoutRes;
+        this.songs = songs;
     }
 
     @NonNull
@@ -39,13 +41,13 @@ public class SongListAdapter extends ArrayAdapter<Song> {
         View convertedView = inflater.inflate(layoutRes,null);
 
         ImageView img = convertedView.findViewById(R.id.song_list_adapter__flag__icon);
-        img.setImageResource(SongUtil.getFlagResId(MainPlayerActivity.getSongs().get(position).getCountry()));
+        img.setImageResource(SongUtil.getFlagResId(songs.get(position).getCountry()));
 
         TextView titleTextView = convertedView.findViewById(R.id.song_list_adapter__tv__title);
-        titleTextView.setText(MainPlayerActivity.getSongs().get(position).getTitle());
+        titleTextView.setText(songs.get(position).getTitle());
 
         TextView bodyTextView = convertedView.findViewById(R.id.song_list_adapter__tv__comment);
-        bodyTextView.setText(MainPlayerActivity.getSongs().get(position).getComment());
+        bodyTextView.setText(songs.get(position).getComment());
 
         return convertedView;
     }
