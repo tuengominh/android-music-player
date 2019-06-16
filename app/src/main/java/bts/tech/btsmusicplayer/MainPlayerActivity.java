@@ -23,7 +23,6 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -204,11 +203,6 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
                 Log.w(TAG, "Not clickable");
         }
         return true;
-    }
-
-    //getters
-    public static List<Song> getSongs() {
-        return songs;
     }
 
     //control click events on list view items

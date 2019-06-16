@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.R;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.util.SongUtil;
