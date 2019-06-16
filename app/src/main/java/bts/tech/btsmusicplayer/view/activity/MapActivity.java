@@ -92,12 +92,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
 
-        //add markers to locations of songs and move camera the the first location (Brazil)
+        //add markers to locations of songs
         for (Song song : songs) {
-            LatLng latLng = MapUtil.getLatLng(song.getTitle());
+            LatLng latLng = MapUtil.getLatLngByTitle(song.getTitle());
             map.addMarker(new MarkerOptions().position(latLng).title(song.getTitle()));
         }
-        map.moveCamera(CameraUpdateFactory.newLatLng(MapUtil.getLatLng(songs.get(0).getTitle())));
+
+        //move camera to the 1st location (Brazil) when clicking map button at control bar
+        //move camera to the location of the long-clicked song in MainPlayerActivity when clicking context menu's map item
+        String currentSongTitle = getIntent().getStringExtra("title");
+
+        if (currentSongTitle == null){
+            map.moveCamera(CameraUpdateFactory.newLatLng(MapUtil.getLatLngByTitle(songs.get(0).getTitle())));
+        } else {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(MapUtil.getLatLngByTitle(currentSongTitle),10));
+        }
+
         map.setOnMarkerClickListener(this);
         map.setOnInfoWindowClickListener(this);
 
@@ -131,7 +141,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 songIcon.setImageResource(SongUtil.getFlagResId(song.getCountry()));
                 songTitle.setText(song.getTitle());
                 songDuration.setText(song.getDuration());
-                songLocation.setText(MapUtil.getLatLng(song.getCountry()).toString());
+                songLocation.setText(MapUtil.getLatLngByTitle(song.getCountry()).toString());
                 songComment.setText(song.getComment());
             }
         }
@@ -161,10 +171,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 break;
             case R.id.activity_map__btn__back:
                 playerService.stop();
+
                 //send data of current playing song when switching back to MainPlayerActivity
                 Intent mapIntent = new Intent(this, MainPlayerActivity.class);
                 mapIntent.putExtra("index", currentSongIndex);
                 startActivity(mapIntent);
+
                 break;
             default:
                 Log.w(TAG, "Not clickable");

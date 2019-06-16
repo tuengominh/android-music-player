@@ -7,7 +7,7 @@ public class MapUtil {
     /** Util class used to get location information based on song titles
      * by default it will be Barcelona */
 
-    public static LatLng getLatLng(String title) {
+    public static LatLng getLatLngByTitle(String title) {
         LatLng latLng;
         switch (title) {
             case "bensoundbrazilsamba" :

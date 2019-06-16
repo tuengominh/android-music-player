@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/floating_menu__item__view__info"
-        android:icon="@drawable/ic_info_foreground"
-        android:title="@string/menu_see_more"
+        android:id="@+id/floating_menu__item__play"
+        android:icon="@drawable/ic_play_foreground"
+        android:title="@string/play_song"
         app:showAsAction="ifRoom" />
 
     <item
@@ -13,11 +13,4 @@
         android:icon="@drawable/ic_map_foreground"
         android:title="@string/menu_view_map"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/floating_menu__item__view__similar"
-        android:icon="@drawable/ic_location_foreground"
-        android:title="@string/view_similar"
-        app:showAsAction="always" />
-
 </menu>

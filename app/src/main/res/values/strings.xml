@@ -7,6 +7,5 @@
     <string name="listview_header">BTS Music Collection</string>
     <string name="img_content_description">TODO</string>
     <string name="menu_view_map">View on map</string>
-    <string name="menu_see_more">See more</string>
-    <string name="view_similar">View similar songs</string>
+    <string name="play_song">Play song</string>
 </resources>

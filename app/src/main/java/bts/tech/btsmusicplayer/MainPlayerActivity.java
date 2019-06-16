@@ -11,7 +11,10 @@ import android.os.Bundle;
 
 import android.os.IBinder;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -26,6 +29,7 @@ import java.util.Random;
 
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
+import bts.tech.btsmusicplayer.util.MapUtil;
 import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.MapActivity;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
@@ -55,6 +59,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     private Button btnNext;
     private Button btnMap;
     private ListView listView;
+    public SongListAdapter listAdapter;
 
     //fields to control the bound service 'PlayerService'
     private PlayerService playerService;
@@ -89,11 +94,12 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         //get context to build resource path in other classes
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        //setup lists of songs
+        //setup lists of songs & list adapter
         for (Song song : SongUtil.getSongList()) {
             songs.add(song);
             playList.add(song.getResId());
         }
+        listAdapter = new SongListAdapter(this,R.layout.song_list_adapter, songs);
 
         //setup buttons
         this.btnPlay = findViewById(R.id.activity_main_player__btn__play);
@@ -117,7 +123,8 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         //setup list view and pass data to SongListAdapter
         this.listView = findViewById(R.id.activity_main_player__song__list__view);
         listView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.listview_header, null));
-        this.listView.setAdapter(new SongListAdapter(this,R.layout.song_list_adapter, songs));
+        this.listView.setAdapter(listAdapter);
+        registerForContextMenu(listView);
         this.listView.setOnItemClickListener(this);
     }
 
@@ -163,6 +170,46 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
             default:
                 Log.w(TAG, "Not clickable");
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater contMenuInflater = this.getMenuInflater();
+        contMenuInflater.inflate(R.menu.floating_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+
+        //get info from the long-clicked item
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        String currentSongTitle = listAdapter.getItem(info.position).getTitle();
+
+        switch (item.getItemId()){
+            case R.id.floating_menu__item__play:
+                Log.d(TAG, "Playing song no." + info.position);
+                if (isBound) {
+                    this.playerService.playByIndex(this, info.position - 1);
+                    callNotification(info.position - 1);
+                }
+                break;
+            case R.id.floating_menu__item__view__map:
+                playerService.stop();
+
+                //send data of current playing song when switching to MapActivity
+                Intent intent = new Intent(this, MapActivity.class);
+                for (int i = 0; i < songs.size(); i++) {
+                    if (songs.get(i).getTitle().equals(currentSongTitle)) {
+                        intent.putExtra("title", songs.get(i - 1).getTitle());
+                    }
+                }
+                startActivity(intent);
+                break;
+            default:
+                Log.w(TAG, "Not clickable");
+        }
+        return true;
     }
 
     //getters
