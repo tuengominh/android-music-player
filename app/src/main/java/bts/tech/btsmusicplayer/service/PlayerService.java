@@ -95,7 +95,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void playByIndex(Context ctx, int index) {
         try {
             stop();
-            //mp = new MediaPlayer();
             createAndConfigMP(ctx, index);
             play();
         } catch (Exception e) {
