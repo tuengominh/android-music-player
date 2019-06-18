@@ -5,7 +5,7 @@
     <item
         android:id="@+id/floating_menu__item__play"
         android:icon="@drawable/ic_play_foreground"
-        android:title="@string/play_song"
+        android:title="@string/menu_play_song"
         app:showAsAction="ifRoom" />
 
     <item

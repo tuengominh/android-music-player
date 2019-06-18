@@ -36,6 +36,18 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         super.onCreate();
     }
 
+    //methods implemented by MediaPlayer's interface
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        play();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp.stop();
+        mp.release();
+    }
+
     //response to click events on buttons and manipulates MediaPlayer
     public void play() {
         if (mp == null) return;
@@ -103,23 +115,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         }
     }
 
-    //methods implemented by MediaPlayer's interfaces
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        play();
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        mp.stop();
-        mp.release();
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        return false;
-    }
-
     //binding & unbinding methods
     @Nullable
     @Override
@@ -129,6 +124,11 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public boolean onUnbind(Intent intent) {
+        return false;
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
         return false;
     }
 }

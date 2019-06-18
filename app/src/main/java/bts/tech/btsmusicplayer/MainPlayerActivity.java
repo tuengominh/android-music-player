@@ -165,6 +165,17 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    //control click events on list view items
+    @Override
+    public void onItemClick (AdapterView < ? > parent, View view,int position, long id){
+        Log.d(TAG, "Song no." + position + " clicked");
+        if (isBound) {
+            this.playerService.playByIndex(this, position - 1);
+            callNotification(position - 1);
+        }
+    }
+
+    //inflate context menu
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -175,10 +186,11 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     @Override
     public boolean onContextItemSelected(MenuItem item){
 
-        //get info from the long-clicked item
+        //get info from the long-clicked listview items
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         String currentSongTitle = listAdapter.getItem(info.position).getTitle();
 
+        //response to click events on menu items
         switch (item.getItemId()){
             case R.id.floating_menu__item__play:
                 Log.d(TAG, "Playing song no." + info.position);
@@ -203,16 +215,6 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
                 Log.w(TAG, "Not clickable");
         }
         return true;
-    }
-
-    //control click events on list view items
-    @Override
-    public void onItemClick (AdapterView < ? > parent, View view,int position, long id){
-        Log.d(TAG, "Song no." + position + " clicked");
-        if (isBound) {
-            this.playerService.playByIndex(this, position - 1);
-            callNotification(position - 1);
-        }
     }
 
     //call customized notification when a song is playing

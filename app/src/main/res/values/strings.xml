@@ -5,7 +5,8 @@
     <string name="title_activity_map">BTS Music Map</string>
 
     <string name="listview_header">BTS Music Collection</string>
-    <string name="img_content_description">TODO</string>
+    <string name="menu_play_song">Play song</string>
     <string name="menu_view_map">View on map</string>
-    <string name="play_song">Play song</string>
+
+    <string name="img_content_description">No description</string>
 </resources>
