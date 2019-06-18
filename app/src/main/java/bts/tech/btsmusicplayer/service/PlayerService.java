@@ -3,7 +3,9 @@ package bts.tech.btsmusicplayer.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -93,7 +95,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void playByIndex(Context ctx, int index) {
         try {
             stop();
-            mp = new MediaPlayer();
+            //mp = new MediaPlayer();
             createAndConfigMP(ctx, index);
             play();
         } catch (Exception e) {
@@ -104,11 +106,12 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     //create and configure media player for each song item
     private void createAndConfigMP(Context ctx, int index) {
         try {
-            mp = MediaPlayer.create(ctx, SongUtil.getSongList().get(index).getResId());
-            //mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            //mp.setDataSource(this, Uri.parse(SongUtil.getSongList().get(index).getResPath()));
-            //mp.prepare();
+            //mp = MediaPlayer.create(ctx, SongUtil.getSongList().get(index).getResId());
+            mp = new MediaPlayer();
+            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mp.setDataSource(ctx, Uri.parse(SongUtil.getSongList().get(index).getResPath()));
             mp.setOnPreparedListener(this);
+            mp.prepareAsync();
             currentSongIndex = index;
         } catch (Exception e) {
             e.printStackTrace();
