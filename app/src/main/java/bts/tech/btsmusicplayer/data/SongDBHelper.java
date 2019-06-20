@@ -40,10 +40,6 @@ public class SongDBHelper extends SQLiteOpenHelper {
             KEY_COUNTRY + " TEXT NOT NULL, " +
             KEY_DURATION + " TEXT NOT NULL);";
 
-    public static final String SELECT_STATEMENT = String.format("SELECT %1$s, %2$s, %3$s, %4$s, %5$s, %6$s, %7$s FROM %8$s ",
-            KEY_ID_RES, KEY_SONG_PATH, KEY_ICON_PATH, KEY_TITLE, KEY_COMMENT, KEY_COUNTRY, KEY_DURATION,
-            TABLE_NAME);
-
     public SongDBHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -51,9 +47,6 @@ public class SongDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_STATEMENT);
-        for (Song song : SongUtil.getSongList()) {
-            addSong(song);
-        }
     }
 
     @Override
@@ -63,7 +56,16 @@ public class SongDBHelper extends SQLiteOpenHelper {
     }
 
     //add songs to database
-    public void addSong(Song song) {
+    public void addSongData()  {
+        int count = this.getCount();
+        if(count == 0 ) {
+            for (Song song : SongUtil.getSongList()) {
+                add(song);
+            }
+        }
+    }
+
+    public void add(Song song) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         addSongDetails(song, values);
@@ -85,12 +87,12 @@ public class SongDBHelper extends SQLiteOpenHelper {
     public List<Song> getAll() {
         List<Song> songs = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_STATEMENT, null);
+        Cursor cursor = db.rawQuery("SELECT  * FROM " + TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
-            while (cursor.moveToNext()) {
+            do {
                 songs.add(getSongFromCursor(cursor));
-            }
+            } while (cursor.moveToNext());
         }
 
         cursor.close();
@@ -107,5 +109,13 @@ public class SongDBHelper extends SQLiteOpenHelper {
                 cursor.getString(6), //country
                 cursor.getString(7), //duration
                 cursor.getString(5)); //comment
+    }
+
+    public int getCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT  * FROM " + TABLE_NAME, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 }

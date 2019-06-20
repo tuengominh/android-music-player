@@ -23,12 +23,13 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import bts.tech.btsmusicplayer.data.SongDBHelper;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
-import bts.tech.btsmusicplayer.util.SongUtil;
 import bts.tech.btsmusicplayer.view.activity.MapActivity;
 import bts.tech.btsmusicplayer.view.activity.NotificationActivity;
 import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
@@ -45,10 +46,9 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     public static String PACKAGE_NAME;
     protected static final String TAG = MainPlayerActivity.class.getSimpleName();
 
-    //fields to control lists of songs & song database
-    //private SongDBHelper songDB = new SongDBHelper(this);
-    private List<Song> songs = SongUtil.getSongList();
-    //private List<Song> songs = songDB.getAll();
+    //fields to access song database
+    private SongDBHelper songDBHelper = new SongDBHelper(this);
+    public static List<Song> songs = new ArrayList();
 
     //fields of UI items: list view & buttons
     private Button btnPlay;
@@ -92,6 +92,10 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
 
         //get context to build resource path in other classes
         PACKAGE_NAME = getApplicationContext().getPackageName();
+
+        //create database and retrieve data
+        songDBHelper.addSongData();
+        this.songs.addAll(songDBHelper.getAll());
 
         //setup buttons
         this.btnPlay = findViewById(R.id.activity_main_player__btn__play);

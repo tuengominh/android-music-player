@@ -52,7 +52,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //fields to control the bound service 'PlayerService'
     private PlayerService playerService;
     private boolean isBound = false;
-    private List<Song> songs = SongUtil.getSongList();
+    private List<Song> songs = MainPlayerActivity.songs;
     private int currentSongIndex = 0;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {

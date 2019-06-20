@@ -14,8 +14,8 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import bts.tech.btsmusicplayer.MainPlayerActivity;
 import bts.tech.btsmusicplayer.model.Song;
-import bts.tech.btsmusicplayer.util.SongUtil;
 
 public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
@@ -27,7 +27,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //fields to handle MediaPlayer
     private MediaPlayer mp;
-    private List<Song> songs = SongUtil.getSongList();
+    private List<Song> songs = MainPlayerActivity.songs;
     public int currentSongIndex = 0;
 
     //constructors
