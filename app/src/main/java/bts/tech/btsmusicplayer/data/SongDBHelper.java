@@ -16,11 +16,15 @@ import bts.tech.btsmusicplayer.util.SongUtil;
 
 public class SongDBHelper extends SQLiteOpenHelper {
 
-    protected static final String TAG = SongDBHelper.class.getSimpleName();
+    /** SQLite DBHelper used to include songs' information into a database
+     * that can be accessed from the app */
+
+    //fields for db & table info
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "song-database";
     public static final String TABLE_NAME = "songs";
 
+    //fields for all columns of songs table
     public static final String KEY_ID_DB = "id";
     public static final String KEY_ID_RES = "resId";
     public static final String KEY_ICON_PATH = "resIcon";
@@ -30,6 +34,7 @@ public class SongDBHelper extends SQLiteOpenHelper {
     public static final String KEY_COUNTRY = "country";
     public static final String KEY_DURATION = "duration";
 
+    //re-usable SQL query statements
     public static final String CREATE_STATEMENT = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
             KEY_ID_DB + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             KEY_ID_RES + " INTEGER NOT NULL, " +
@@ -44,11 +49,13 @@ public class SongDBHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+    //create table
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_STATEMENT);
     }
 
+    //drop and re-create table
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
@@ -58,7 +65,7 @@ public class SongDBHelper extends SQLiteOpenHelper {
     //add songs to database
     public void addSongData()  {
         int count = this.getCount();
-        if(count == 0 ) {
+        if(count == 0) {
             for (Song song : SongUtil.getSongList()) {
                 add(song);
             }
