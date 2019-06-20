@@ -26,7 +26,6 @@ import androidx.core.app.NotificationCompat;
 import java.util.List;
 import java.util.Random;
 
-import bts.tech.btsmusicplayer.data.SongDatabase;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
 import bts.tech.btsmusicplayer.util.SongUtil;
@@ -47,7 +46,9 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     protected static final String TAG = MainPlayerActivity.class.getSimpleName();
 
     //fields to control lists of songs & song database
+    //private SongDBHelper songDB = new SongDBHelper(this);
     private List<Song> songs = SongUtil.getSongList();
+    //private List<Song> songs = songDB.getAll();
 
     //fields of UI items: list view & buttons
     private Button btnPlay;
@@ -92,9 +93,6 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         //get context to build resource path in other classes
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        //setup lists of songs & list adapter
-        listAdapter = new SongListAdapter(this,R.layout.song_list_adapter, songs);
-
         //setup buttons
         this.btnPlay = findViewById(R.id.activity_main_player__btn__play);
         this.btnPlay.setOnClickListener(this);
@@ -115,6 +113,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         this.btnMap.setOnClickListener(this);
 
         //setup list view and pass data to SongListAdapter
+        listAdapter = new SongListAdapter(this,R.layout.song_list_adapter, songs);
         this.listView = findViewById(R.id.activity_main_player__song__list__view);
         listView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.listview_header, null));
         this.listView.setAdapter(listAdapter);

@@ -12,9 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bts.tech.btsmusicplayer.model.Song;
+import bts.tech.btsmusicplayer.util.SongUtil;
 
-public class SongDatabase extends SQLiteOpenHelper {
+public class SongDBHelper extends SQLiteOpenHelper {
 
+    protected static final String TAG = SongDBHelper.class.getSimpleName();
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "song-database";
     public static final String TABLE_NAME = "songs";
@@ -42,13 +44,16 @@ public class SongDatabase extends SQLiteOpenHelper {
             KEY_ID_RES, KEY_SONG_PATH, KEY_ICON_PATH, KEY_TITLE, KEY_COMMENT, KEY_COUNTRY, KEY_DURATION,
             TABLE_NAME);
 
-    public SongDatabase(@Nullable Context context) {
+    public SongDBHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_STATEMENT);
+        for (Song song : SongUtil.getSongList()) {
+            addSong(song);
+        }
     }
 
     @Override

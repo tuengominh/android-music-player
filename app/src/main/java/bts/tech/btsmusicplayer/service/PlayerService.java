@@ -111,7 +111,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     //create and configure media player for each song item
     private void createAndConfigMP(Context ctx, int index) {
         try {
-            //mp = MediaPlayer.create(ctx, SongUtil.getSongList().get(index).getResId());
+            /*mp = MediaPlayer.create(ctx, songs.get(index).getResId());*/
             mp = new MediaPlayer();
             mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mp.setDataSource(ctx, Uri.parse(songs.get(index).getResPath()));
