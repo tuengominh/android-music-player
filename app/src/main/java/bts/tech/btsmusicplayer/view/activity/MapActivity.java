@@ -202,8 +202,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //send data to NotificationActivity
         Intent tapIntent = new Intent(this, NotificationActivity.class);
         tapIntent.putExtra("index", index);
-        tapIntent.putExtra("title", SongUtil.getSongList().get(index).getTitle());
-        tapIntent.putExtra("text", SongUtil.getSongList().get(index).getComment());
+        tapIntent.putExtra("title", songs.get(index).getTitle());
+        tapIntent.putExtra("text", songs.get(index).getComment());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 23, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -212,7 +212,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_noti_foreground)
                 .setContentTitle("Now Playing")
-                .setContentText(SongUtil.getSongList().get(index).getTitle())
+                .setContentText(songs.get(index).getTitle())
                 .setContentIntent(pendingIntent);
 
         ((NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE))

@@ -62,21 +62,18 @@ public class SongDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         addSongDetails(song, values);
-
         db.insert(TABLE_NAME, null, values);
         db.close();
     }
 
-    //update songs in database
-    public int updateSong(Song song) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        addSongDetails(song, values);
-
-        int result = db.update(TABLE_NAME, values, KEY_ID_RES + " = ?",
-                new String[]{String.valueOf(song.getResId())});
-        db.close();
-        return result;
+    private void addSongDetails(Song song, ContentValues values) {
+        values.put(KEY_ID_RES, song.getResId());
+        values.put(KEY_SONG_PATH, song.getResPath());
+        values.put(KEY_ICON_PATH, song.getFlagResPath());
+        values.put(KEY_TITLE, song.getTitle());
+        values.put(KEY_COMMENT, song.getComment());
+        values.put(KEY_COUNTRY, song.getCountry());
+        values.put(KEY_DURATION, song.getDuration());
     }
 
     //get all songs in database
@@ -94,33 +91,6 @@ public class SongDatabase extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return songs;
-    }
-
-    //get song by resId
-    public Song getSongByResId(int resId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME,
-                new String[] { KEY_ID_RES, KEY_SONG_PATH, KEY_ICON_PATH, KEY_TITLE, KEY_COMMENT, KEY_COUNTRY, KEY_DURATION},
-                KEY_ID_RES + "=?",
-                new String[] { String.valueOf(resId) }, null, null, null, null);
-
-        if (cursor != null)
-            cursor.moveToFirst();
-        Song song = getSongFromCursor(cursor);
-
-        cursor.close();
-        db.close();
-        return song;
-    }
-
-    private void addSongDetails(Song song, ContentValues values) {
-        values.put(KEY_ID_RES, song.getResId());
-        values.put(KEY_SONG_PATH, song.getResPath());
-        values.put(KEY_ICON_PATH, song.getFlagResPath());
-        values.put(KEY_TITLE, song.getTitle());
-        values.put(KEY_COMMENT, song.getComment());
-        values.put(KEY_COUNTRY, song.getCountry());
-        values.put(KEY_DURATION, song.getDuration());
     }
 
     private Song getSongFromCursor(Cursor cursor) {

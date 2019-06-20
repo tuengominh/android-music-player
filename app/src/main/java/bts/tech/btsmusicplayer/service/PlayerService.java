@@ -12,6 +12,9 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
+import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.util.SongUtil;
 
 public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
@@ -24,10 +27,13 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     //fields to handle MediaPlayer
     private MediaPlayer mp;
+    private List<Song> songs = SongUtil.getSongList();
     public int currentSongIndex = 0;
 
     //constructors
-    public PlayerService() { }
+    public PlayerService() {
+    }
+
     public PlayerService(IBinder serviceInfo) {
         this.iBinder = serviceInfo;
     }
@@ -76,7 +82,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void previous(Context ctx) {
         this.currentSongIndex--;
         if (this.currentSongIndex < 0) {
-            this.currentSongIndex = (SongUtil.getSongList().size() - 1);
+            this.currentSongIndex = (songs.size() - 1);
         }
         playByIndex(ctx, this.currentSongIndex);
         Log.d(TAG, "Playing song with index " + currentSongIndex);
@@ -84,7 +90,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     public void next(Context ctx) {
         this.currentSongIndex++;
-        if (this.currentSongIndex > (SongUtil.getSongList().size() - 1)) {
+        if (this.currentSongIndex > (songs.size() - 1)) {
             this.currentSongIndex = 0;
         }
         playByIndex(ctx, this.currentSongIndex);
@@ -108,7 +114,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             //mp = MediaPlayer.create(ctx, SongUtil.getSongList().get(index).getResId());
             mp = new MediaPlayer();
             mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mp.setDataSource(ctx, Uri.parse(SongUtil.getSongList().get(index).getResPath()));
+            mp.setDataSource(ctx, Uri.parse(songs.get(index).getResPath()));
             mp.setOnPreparedListener(this);
             mp.prepareAsync();
             currentSongIndex = index;

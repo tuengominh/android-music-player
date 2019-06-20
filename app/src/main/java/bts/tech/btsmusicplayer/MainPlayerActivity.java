@@ -26,6 +26,7 @@ import androidx.core.app.NotificationCompat;
 import java.util.List;
 import java.util.Random;
 
+import bts.tech.btsmusicplayer.data.SongDatabase;
 import bts.tech.btsmusicplayer.model.Song;
 import bts.tech.btsmusicplayer.service.PlayerService;
 import bts.tech.btsmusicplayer.util.SongUtil;
@@ -45,8 +46,8 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     public static String PACKAGE_NAME;
     protected static final String TAG = MainPlayerActivity.class.getSimpleName();
 
-    //fields to control lists of songs
-    private static List<Song> songs = SongUtil.getSongList();
+    //fields to control lists of songs & song database
+    private List<Song> songs = SongUtil.getSongList();
 
     //fields of UI items: list view & buttons
     private Button btnPlay;
@@ -223,8 +224,8 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         //send data to NotificationActivity
         Intent tapIntent = new Intent(this, NotificationActivity.class);
         tapIntent.putExtra("index", index);
-        tapIntent.putExtra("title", SongUtil.getSongList().get(index).getTitle());
-        tapIntent.putExtra("text", SongUtil.getSongList().get(index).getComment());
+        tapIntent.putExtra("title", songs.get(index).getTitle());
+        tapIntent.putExtra("text", songs.get(index).getComment());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 23, tapIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -233,7 +234,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_noti_foreground)
                 .setContentTitle("Now Playing")
-                .setContentText(SongUtil.getSongList().get(index).getTitle())
+                .setContentText(songs.get(index).getTitle())
                 .setContentIntent(pendingIntent);
 
         ((NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE))
