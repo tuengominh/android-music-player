@@ -68,7 +68,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
             playerService = new PlayerService(serviceInfo);
 
             //when this activity connect to PlayerService for the 1st time, it will automatically play the 1st song
-            //when users navigate to this activity from MapActivity, it will play the current playing song in MapActivity
+            //when users navigate to this activity selectFrom MapActivity, it will play the current playing song in MapActivity
             int index = getIntent().getIntExtra("index", 0);
             playerService.playByIndex(MainPlayerActivity.this, index);
             callNotification(index);
@@ -186,7 +186,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     @Override
     public boolean onContextItemSelected(MenuItem item){
 
-        //get info from the long-clicked listview items
+        //get info selectFrom the long-clicked listview items
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         String currentSongTitle = listAdapter.getItem(info.position).getTitle();
 
