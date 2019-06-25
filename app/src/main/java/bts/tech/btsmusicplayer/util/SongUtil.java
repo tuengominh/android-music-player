@@ -82,7 +82,7 @@ public class SongUtil {
         return songs;
     }
 
-    /** also get flag icons corresponding to songs' countries */
+    /** get flag icons corresponding to songs' countries */
     public static int getFlagResId(String country) {
         int flagResId;
         switch (country) {

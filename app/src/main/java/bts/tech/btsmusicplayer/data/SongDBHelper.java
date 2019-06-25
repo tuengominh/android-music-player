@@ -16,8 +16,7 @@ import bts.tech.btsmusicplayer.util.SongUtil;
 
 public class SongDBHelper extends SQLiteOpenHelper {
 
-    /** SQLite DBHelper used to include songs' information into a database
-     * that can be accessed from the app */
+    /** DBHelper used to include songs' info into a SQLite database that can be accessed from the app */
 
     //fields for db & table info
     private static final int DB_VERSION = 1;
@@ -45,17 +44,18 @@ public class SongDBHelper extends SQLiteOpenHelper {
             KEY_COUNTRY + " TEXT NOT NULL, " +
             KEY_DURATION + " TEXT NOT NULL);";
 
+    //constructor
     public SongDBHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
-    //create table
+    //onCreate(): create table
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_STATEMENT);
     }
 
-    //drop and re-create table
+    //onUpgrade(): drop and re-create table
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
@@ -90,7 +90,7 @@ public class SongDBHelper extends SQLiteOpenHelper {
         values.put(KEY_DURATION, song.getDuration());
     }
 
-    //get all songs in database
+    //retrieve all songs in database
     public List<Song> getAll() {
         List<Song> songs = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();

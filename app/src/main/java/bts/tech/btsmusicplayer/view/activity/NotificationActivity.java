@@ -18,7 +18,7 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
-        //get data selectFrom PlayerService
+        //get data from PlayerService
         Intent intent = getIntent();
 
         final TextView songTitle = findViewById(R.id.activity_notification__tv__song_title);

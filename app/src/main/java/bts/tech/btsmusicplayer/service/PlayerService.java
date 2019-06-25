@@ -19,9 +19,9 @@ import bts.tech.btsmusicplayer.model.Song;
 
 public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
-    /** PlayerService is the bound service handling MediaPlayer */
+    /** PlayerService is the bound service handling MediaPlayer objects */
 
-    //fields to get context & handle binder
+    //fields to get context & handle Binder
     private static final String TAG = PlayerService.class.getSimpleName();
     private IBinder iBinder = new Binder();
 
@@ -44,19 +44,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         super.onCreate();
     }
 
-    //methods implemented by MediaPlayer's interface
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        mp.start();
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        mp.stop();
-        mp.release();
-    }
-
-    //response to click events on buttons and manipulates MediaPlayer
+    //response to click events on control buttons and manipulate the media player
     public void play() {
         if (mp == null) return;
         if (!mp.isPlaying()) {
@@ -107,7 +95,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         }
     }
 
-    //create and configure media player for each song item
+    //create and configure MediaPlayer object for each song item
     private void createAndConfigMP(Context ctx, int index) {
         try {
             /*mp = MediaPlayer.create(ctx, songs.get(index).getResId());*/
@@ -132,6 +120,18 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     @Override
     public boolean onUnbind(Intent intent) {
         return false;
+    }
+
+    //methods required by interfaces
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp.stop();
+        mp.release();
     }
 
     @Override

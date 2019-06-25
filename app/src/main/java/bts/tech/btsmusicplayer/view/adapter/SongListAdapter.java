@@ -20,7 +20,7 @@ import bts.tech.btsmusicplayer.util.SongUtil;
 
 public class SongListAdapter extends ArrayAdapter<Song> {
 
-    /** Inflate songs info into a list view */
+    /** Inflate songs info into a list view in MainPlayerActivity */
 
     private Context context;
     private int layoutRes;

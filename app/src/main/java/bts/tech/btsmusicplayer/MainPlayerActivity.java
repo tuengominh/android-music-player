@@ -36,13 +36,12 @@ import bts.tech.btsmusicplayer.view.adapter.SongListAdapter;
 
 public class MainPlayerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    /** This is the main/host activity
-     * handling the media player with control buttons,
-     * call notifications,
-     * inflating the menu, and
-     * handling the list view with all songs */
+    /** This is the main/host activity that inflates control buttons
+     * call PlayerService that handles MediaPlayer
+     * call notifications while a song is playing
+     * and inflating the list view with all songs */
 
-    //fields to get context & build resource path
+    //fields to get context & build resource path in Util classes
     public static String PACKAGE_NAME;
     protected static final String TAG = MainPlayerActivity.class.getSimpleName();
 
@@ -69,8 +68,8 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         public void onServiceConnected(ComponentName name, IBinder serviceInfo) {
             playerService = new PlayerService(serviceInfo);
 
-            //when this activity connect to PlayerService for the 1st time, it will automatically play the 1st song
-            //when users navigate to this activity selectFrom MapActivity, it will play the current playing song in MapActivity
+            //when this activity connects to PlayerService for the 1st time, it will automatically play the 1st song
+            //when users navigate to this activity from MapActivity, it will play the current playing song in MapActivity
             int index = getIntent().getIntExtra("index", 0);
             playerService.playByIndex(MainPlayerActivity.this, index);
             callNotification(index);
@@ -116,16 +115,18 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         this.btnMap = findViewById(R.id.activity_main_player__btn__map);
         this.btnMap.setOnClickListener(this);
 
-        //setup list view and pass data to SongListAdapter
+        //setup & get converted view from SongListAdapter
         listAdapter = new SongListAdapter(this,R.layout.song_list_adapter, songs);
         this.listView = findViewById(R.id.activity_main_player__song__list__view);
         listView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.listview_header, null));
         this.listView.setAdapter(listAdapter);
+
+        //register for context menu & set on-item click listener for the list view
         registerForContextMenu(listView);
         this.listView.setOnItemClickListener(this);
     }
 
-    //bind PlayerService within a Thread object
+    //onStart(): bind PlayerService within a Thread object
     @Override
     protected void onStart() {
         super.onStart();
@@ -179,7 +180,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    //inflate context menu
+    //inflate & handle context menu
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -190,7 +191,7 @@ public class MainPlayerActivity extends AppCompatActivity implements View.OnClic
     @Override
     public boolean onContextItemSelected(MenuItem item){
 
-        //get info selectFrom the long-clicked listview items
+        //get info from the long-clicked listview items
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         String currentSongTitle = listAdapter.getItem(info.position).getTitle();
 

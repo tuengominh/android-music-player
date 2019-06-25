@@ -68,6 +68,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     };
 
+    //onCreate(): obtain Map fragment & setup UI items
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,8 +99,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             map.addMarker(new MarkerOptions().position(latLng).title(song.getTitle()));
         }
 
-        //move camera to the 1st location (Brazil) when clicking map button at control bar
-        //move camera to the location of the long-clicked song in MainPlayerActivity when clicking context menu's map item
+        //move camera to the 1st location (Brazil) when clicking Map button at MainPlayerActivity
+        //move camera to the location of the long-clicked song in MainPlayerActivity when clicking Map menu item
         String currentSongTitle = getIntent().getStringExtra("title");
 
         if (currentSongTitle == null){
@@ -127,9 +128,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         //zoom in 10x when clicking marker
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 10));
+
+        //inflate custom song's information for clicked marker
         currentMarker = marker;
 
-        //inflate custom image views & text views for clicked marker
         final ImageView songIcon = findViewById(R.id.activity_map__flag__icon);
         final TextView songTitle = findViewById(R.id.activity_map__tv__title);
         final TextView songDuration = findViewById(R.id.activity_map__tv__duration);
