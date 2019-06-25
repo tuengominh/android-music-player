@@ -125,7 +125,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     //methods required by interfaces
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mp.start();
+        play();
     }
 
     @Override
