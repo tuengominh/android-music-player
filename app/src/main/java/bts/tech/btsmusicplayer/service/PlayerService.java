@@ -47,7 +47,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     //methods implemented by MediaPlayer's interface
     @Override
     public void onPrepared(MediaPlayer mp) {
-        play();
+        mp.start();
     }
 
     @Override
@@ -102,7 +102,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         try {
             stop();
             createAndConfigMP(ctx, index);
-            play();
         } catch (Exception e) {
             e.printStackTrace();
         }
