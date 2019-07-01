@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -109,6 +110,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(MapUtil.getLatLngByTitle(currentSongTitle),10));
         }
 
+        Toast.makeText(this, "Click a marker", Toast.LENGTH_SHORT).show();
         map.setOnMarkerClickListener(this);
         map.setOnInfoWindowClickListener(this);
 
